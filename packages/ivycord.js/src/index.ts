@@ -1,3 +1,3 @@
-import { BaseClient } from './core/BaseClient';
+import { BaseClient, ClientOptions } from './core/BaseClient';
 
-export { BaseClient };
+export { BaseClient, ClientOptions };
