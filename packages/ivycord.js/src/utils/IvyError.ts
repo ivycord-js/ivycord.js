@@ -1,5 +1,6 @@
-// treba se pogledati dobro jer nisam siguran u ovo - camdzic
+type Errors = 'WS_ALREADY_CONNECTED';
 
+<<<<<<< HEAD
 type MessageKey =
   | 'WS_UNABLE_TO_CONNECT'
   | 'WS_ALREADY_CONNECTED'
@@ -12,16 +13,20 @@ const Messages: Record<MessageKey, string | MessageFunction> = {
   WS_ALREADY_CONNECTED: 'Already connected to the WebSocket',
   LARGE_THRESHOLD_INVALID:
     "Large threshold can't be lower than 50 or higher than 250"
+=======
+const messages: Record<Errors, string> = {
+  WS_ALREADY_CONNECTED: 'Already connected to the WebSocket'
+>>>>>>> 97fcf6981569ec9052b49cb71cc5afea88f86273
 };
 
 class IvyError extends Error {
-  constructor(key: MessageKey, ...args: any[]) {
-    if (!(key in Messages)) {
-      throw new TypeError(`Error key '${key}' does not exist`);
-    }
-
-    const message = Messages[key];
-
-    super(typeof message === 'function' ? message(...args) : message);
+  constructor(error: Errors) {
+    const message = messages[error];
+    super(message);
   }
 }
+<<<<<<< HEAD
+=======
+
+export { IvyError };
+>>>>>>> 97fcf6981569ec9052b49cb71cc5afea88f86273
