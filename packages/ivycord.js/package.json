@@ -1,0 +1,59 @@
+{
+  "name": "ivycord.js",
+  "version": "0.0.1",
+  "description": "A powerful Discord API wrapper JavaScript library.",
+  "license": "MIT",
+  "homepage": "https://ivycord.js.org",
+  "scripts": {
+    "build": "tsc"
+  },
+  "contributors": [
+    "null68",
+    "kikorp78",
+    "camdzic",
+    "spectral37"
+  ],
+  "keywords": [
+    "discord",
+    "api",
+    "wrapper",
+    "node",
+    "ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivycord-js/ivycord.js.git",
+    "directory": "packages/ivycord.js"
+  },
+  "bugs": {
+    "url": "https://github.com/ivycord-js/ivycord.js/issues"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@8.14.0",
+  "devDependencies": {
+    "@types/ws": "^8.5.10"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}
