@@ -16,9 +16,12 @@ export class BaseClient extends EventEmitter {
     super();
     this.token = options.token || undefined;
     this.compress = options.compress || false;
-    // TODO: limitovat threshold od 50 do 250
     this.largeThreshold = options.largeThreshold || 50;
     this.shard = new Shard(this);
+
+    if (this.largeThreshold < 50 || this.largeThreshold > 250) {
+      throw new IvyError('LARGE_THRESHOLD_INVALID');
+    }
   }
   connect() {
     this.shard.connect();

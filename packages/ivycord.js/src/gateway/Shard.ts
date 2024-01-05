@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-
+import pako from 'pako';
 import { BaseClient } from '../core/BaseClient';
 
 export class Shard {
@@ -11,6 +11,7 @@ export class Shard {
   private sequence: number | null;
   private heartbeatInterval: ReturnType<typeof setInterval>;
   private sessionID: number;
+  private _pako: pako.Inflate | null;
   constructor(client: BaseClient) {
     this.client = client;
     this.connected = false;
@@ -22,6 +23,12 @@ export class Shard {
     if (this.connected) {
       throw new IvyError('WS_ALREADY_CONNECTED');
     }
+    if (this.client.compress) {
+      this._pako = new pako.Inflate({
+        chunkSize: 65535
+      });
+    }
+
     this.ws = new WebSocket(
       `wss://gateway.discord.gg/?v=10&encoding=json${
         this.client.compress ? '&compress=zlib-stream' : ''
@@ -39,9 +46,15 @@ export class Shard {
       // TODO: dodaj reconnect attemptove
     });
     this.ws?.on('message', (data) => {
-      data = JSON.parse(data.toString());
-      console.log(data);
-      this.handleMessages(data);
+      if (this.client.compress) {
+        //this._pako?.push(data.toString(), false);
+        
+        // FIXME: popravi jebem mu staru
+      } else {
+        data = JSON.parse(data.toString());
+      }
+      //data = JSON.parse(data.toString());
+      //this.handleMessages(data);
     });
     this.ws?.on('close', () => {
       this.connected = false;
@@ -61,7 +74,6 @@ export class Shard {
         this.heartbeat();
         this.identify();
         this.heartbeatInterval = setInterval(() => {
-          console.log('a');
           this.heartbeat();
         }, data.d.heartbeat_interval);
         break;
