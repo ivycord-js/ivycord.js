@@ -5,7 +5,7 @@
   "license": "MIT",
   "homepage": "https://ivycord.js.org",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc -p tsconfig.json"
   },
   "contributors": [
     "null68",
