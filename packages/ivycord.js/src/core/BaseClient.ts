@@ -2,6 +2,7 @@ import { EventEmitter } from 'ws';
 
 import { Shard } from '../gateway/Shard';
 import { IvyError } from '../errors/IvyError';
+import { RequestHandler } from '../handlers/RequestHandler';
 
 interface ClientOptions {
   token: string;
@@ -15,6 +16,7 @@ class BaseClient extends EventEmitter {
   public largeThreshold: number;
   public shard: Shard;
 
+  public requestHandler: RequestHandler = new RequestHandler(this);
   constructor(options: ClientOptions) {
     super();
     this.token = options.token;
