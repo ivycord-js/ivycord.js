@@ -1,7 +1,7 @@
 import { EventEmitter } from 'ws';
 
 import { Shard } from '../gateway/Shard';
-import { IvyError } from '../utils/IvyError';
+import { IvyError } from '../errors/IvyError';
 
 interface ClientOptions {
   token: string;
