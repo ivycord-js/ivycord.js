@@ -1,33 +1,40 @@
+import axios, { AxiosError, AxiosResponse } from 'axios';
+
 import { BaseClient } from '../core/BaseClient';
-import { IvyError } from '../errors/IvyError';
+import { VERSION } from '../utils/constants';
+import { IvyError } from '../utils/errors/IvyError';
+
 const BASE_URL = 'https://discord.com/api/v10';
 
-type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+
 class RequestHandler {
   private client: BaseClient;
+
   constructor(client: BaseClient) {
     this.client = client;
   }
-  async request(method: Method, endpoint: string, body: unknown) {
+
+  async request<T>(
+    method: RequestMethod,
+    endpoint: string,
+    body: unknown
+  ): Promise<AxiosResponse<T>> {
     try {
       const headers = {
         'Content-Type': 'application/json',
-        'User-Agent': `DiscordBot (Ivycord/${
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('../../package.json').version
-        })`,
+        'User-Agent': `DiscordBot (Ivycord/${VERSION})`,
         Authorization: `Bot ${this.client.token}`
       };
-      const res = await fetch(BASE_URL + endpoint, {
+      const res = await axios({
+        url: `${BASE_URL}/${endpoint}`,
         method,
         headers,
-        body: body ? JSON.stringify(body) : undefined
+        data: body ? JSON.stringify(body) : undefined
       });
-      if (res.status === 204) return;
-      const data = await res.json();
-      if (res.ok) return data;
-    } catch (error: unknown) {
-      throw new IvyError('FETCH_ERROR', (error as Error).message);
+      return res.data;
+    } catch (err) {
+      throw new IvyError('FETCH_ERROR', (err as AxiosError).message);
     }
   }
 }

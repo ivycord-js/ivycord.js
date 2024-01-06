@@ -4,10 +4,10 @@ const messages = {
   FETCH_ERROR: 'An error occurred while fetching\n\n{message}'
 };
 
-type ErrorsKey = keyof typeof messages;
+type ErrorKeys = keyof typeof messages;
 
 class IvyError extends Error {
-  constructor(error: ErrorsKey, message?: string) {
+  constructor(error: ErrorKeys, message?: string) {
     const errorMessage = messages[error].replace(/{message}/g, message ?? '');
     super(errorMessage);
   }
