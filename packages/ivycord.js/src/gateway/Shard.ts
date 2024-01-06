@@ -1,8 +1,8 @@
-import WebSocket from 'ws';
+import { WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
 import { BaseClient } from '../core/BaseClient';
-import { IvyError } from '../utils/IvyError';
+import { IvyError } from '../errors/IvyError';
 
 class Shard {
   public client: BaseClient;
