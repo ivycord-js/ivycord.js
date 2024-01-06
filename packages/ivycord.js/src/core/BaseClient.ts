@@ -10,10 +10,10 @@ interface ClientOptions {
 }
 
 class BaseClient extends EventEmitter {
-  public token: string | null = null;
-  public compress: boolean = false;
-  public largeThreshold: number = 50;
-  public shard: Shard | null = null;
+  public token: string;
+  public compress: boolean;
+  public largeThreshold: number;
+  public shard: Shard;
 
   constructor(options: ClientOptions) {
     super();
@@ -28,7 +28,7 @@ class BaseClient extends EventEmitter {
   }
 
   connect() {
-    this.shard?.connect();
+    this.shard.connect();
   }
 }
 

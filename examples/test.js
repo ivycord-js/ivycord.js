@@ -6,7 +6,7 @@ const client = new BaseClient({
 });
 
 client.on('heartbeat', () => {
-  console.log('hearbeat');
+  console.log('heartbeat received');
 });
 
 client.connect();
