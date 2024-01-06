@@ -44,10 +44,10 @@ class Shard {
       if (this.client?.compress) {
         let buffer = Buffer.alloc(0);
         buffer = Buffer.concat([buffer, data as Buffer]);
-        let zlibSuffix = Buffer.from([0x00, 0x00, 0xff, 0xff]);
+        const zlibSuffix = Buffer.from([0x00, 0x00, 0xff, 0xff]);
         if (
           buffer.length >= 4 &&
-          Buffer.compare(zlibSuffix, buffer.subarray(buffer.length - 4)) == 0
+          Buffer.compare(zlibSuffix, buffer.subarray(buffer.length - 4)) === 0
         ) {
           this.inflate.push(buffer, Z_SYNC_FLUSH);
         } else {
@@ -108,6 +108,7 @@ class Shard {
   }
 
   private heartbeat() {
+    // FIXME: ovo je samo privremeno
     this.ws?.send(
       JSON.stringify({
         op: 1,
