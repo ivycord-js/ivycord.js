@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { BaseClient } from '../core/BaseClient';
 import { VERSION } from '../utils/constants';
@@ -18,13 +18,15 @@ class RequestHandler {
   async request<T>(
     method: RequestMethod,
     endpoint: string,
-    body: unknown
-  ): Promise<AxiosResponse<T>> {
+    body?: unknown
+  ): Promise<T> {
     try {
       const headers = {
         'Content-Type': 'application/json',
         'User-Agent': `DiscordBot (Ivycord/${VERSION})`,
-        Authorization: `Bot ${this.client.token}`
+        Authorization: `${this.client.token.startsWith('Bot ') ? '' : 'Bot '}${
+          this.client.token
+        }`
       };
       const res = await axios({
         url: `${BASE_URL}/${endpoint}`,
@@ -32,6 +34,7 @@ class RequestHandler {
         headers,
         data: body ? JSON.stringify(body) : undefined
       });
+      // TODO: dodati error handling
       return res.data;
     } catch (err) {
       throw new IvyError('FETCH_ERROR', (err as AxiosError).message);
