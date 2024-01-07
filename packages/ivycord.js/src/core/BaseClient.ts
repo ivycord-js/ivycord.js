@@ -1,6 +1,7 @@
 import { EventEmitter } from 'ws';
+import { APIGatewayBotInfo } from 'discord-api-types/v10';
 
-import { IvyError } from '../errors/IvyError';
+import { IvyError } from '../utils/errors/IvyError';
 import { Shard } from '../gateway/Shard';
 import { RequestHandler } from '../handlers/RequestHandler';
 
@@ -18,6 +19,9 @@ class BaseClient extends EventEmitter {
 
   public requestHandler: RequestHandler;
 
+  public _userAgent: string; // TODO: dodaj ovo
+  public _gatewayData: APIGatewayBotInfo;
+
   constructor(options: ClientOptions) {
     super();
     this.token = options.token;
@@ -32,8 +36,18 @@ class BaseClient extends EventEmitter {
     }
   }
 
-  connect() {
-    this.shard.connect();
+  protected async getGateway() {
+    const gatewayData = await this.requestHandler.request<APIGatewayBotInfo>(
+      'GET',
+      '/gateway/bot'
+    );
+    this._gatewayData = gatewayData;
+    return;
+  }
+
+  async connect() {
+    await this.getGateway();
+    this.shard.initWS();
   }
 }
 
