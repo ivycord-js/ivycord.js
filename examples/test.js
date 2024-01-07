@@ -9,4 +9,8 @@ client.on('heartbeat', () => {
   console.log('heartbeat received');
 });
 
+client.on('ready', () => {
+  console.log('ready');
+});
+
 client.connect();
