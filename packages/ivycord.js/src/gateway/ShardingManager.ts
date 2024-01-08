@@ -1,6 +1,7 @@
 import { BaseClient } from '../core/BaseClient';
 import { Shard } from './Shard';
 
+// TODO: kikorp: dodati jsdoc nakon sto se zavrsi file
 class ShardingManager {
   public client: BaseClient;
   public shards: Shard[];

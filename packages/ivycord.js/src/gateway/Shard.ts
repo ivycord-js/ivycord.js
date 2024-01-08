@@ -1,15 +1,18 @@
-import { RawData, WebSocket } from 'ws';
-import { Z_SYNC_FLUSH, Inflate } from 'zlib-sync';
 import {
   GatewayCloseCodes,
   GatewayOpcodes,
   GatewayVersion
 } from 'discord-api-types/gateway/v10';
+import { RawData, WebSocket } from 'ws';
+import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
 import { BaseClient } from '../core/BaseClient';
 import { IvyError } from '../utils/errors/IvyError';
 import { EventEmitter } from 'stream';
 
+/**
+ * Gateway connection status type
+ */
 type ConnectionStatus =
   | 'DISCONNECTED'
   | 'HANDSHAKING'
@@ -17,25 +20,75 @@ type ConnectionStatus =
   | 'RECONNECTING'
   | 'RESUMING';
 
+/**
+ * Represents a Discord shard
+ */
 class Shard extends EventEmitter {
+  /**
+   * The client that manages this shard
+   */
   public client: BaseClient;
+
+  /**
+   * The WebSocket connection of the shard
+   */
   public ws: WebSocket;
+
+  /**
+   * The WebSocket latency of the shard
+   */
   public latency: number;
   public id: number;
 
-  private connected: boolean;
-  // @eslint-kikorp-ne-edituj-sljedecu-liniju
-  private sequence: number | null = null;
-  private inflate: Inflate;
+  /**
+   * The current gateway connection status of the shard
+   */
   private status: ConnectionStatus = 'DISCONNECTED';
 
+  /**
+   * The inflate stream for decompressing gateway data
+   */
+  private inflate: Inflate;
+
+  /**
+   * The last event sequence number received from the gateway
+   */
+  private sequence: number | null = null;
+
+  /**
+   * Timestamp of the last heartbeat sent
+   */
   private lastHeartbeat: number;
+
+  /**
+   * Timestamp of the last heartbeat acknowledged
+   */
   private lastHeartbeatAck: number;
+
+  /**
+   * Interval for sending heartbeats
+   */
   private heartbeatInterval: ReturnType<typeof setInterval>;
+
+  /**
+   * Interval for reconnecting to the gateway
+   */
   private reconnectInterval: ReturnType<typeof setInterval>;
+
+  /**
+   * The URL for resuming the gateway connection
+   */
   private resumeGatewayURL: string;
+
+  /**
+   * The session ID of the shard
+   */
   private sessionID: number | null;
 
+  /**
+   * Creates a new instance of the shard
+   * @param client The client that manages this shard
+   */
   constructor(client: BaseClient, id: number) {
     super();
     this.client = client;
@@ -47,10 +100,12 @@ class Shard extends EventEmitter {
     this._onClose = this._onClose.bind(this);
   }
 
+  /**
+   * Initializes the WebSocket connection
+   */
   initWS() {
-    if (this.connected) {
+    if (this.status !== 'DISCONNECTED')
       throw new IvyError('WS_ALREADY_CONNECTED');
-    }
     if (this.client.compress) {
       this.inflate = new Inflate({
         chunkSize: 65535,
@@ -80,13 +135,25 @@ class Shard extends EventEmitter {
     this.ws.on('close', this._onClose);
   }
 
+  /**
+   * Handles the 'open' event received from the gateway
+   */
   private _onOpen() {
     this.status = 'HANDSHAKING';
     if (this.reconnectInterval) clearInterval(this.reconnectInterval);
   }
+
+  /**
+   * Handles the 'error' event received from the gateway
+   */
   private _onError(error: ErrorEvent) {
     this.emit('error', error.error, this.id);
   }
+
+  /**
+   * Handles the 'message' event received from the gateway
+   * @param data Data received from the gateway
+   */
   private _onMessage(data: RawData) {
     if (this.client.compress) {
       let buffer = Buffer.alloc(0);
@@ -104,6 +171,11 @@ class Shard extends EventEmitter {
     this.handleOPCodes(data);
   }
 
+  /**
+   * Handles the 'close' event received from the gateway
+   * @param code The close code
+   * @param reason Reason for closing
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _onClose(code: number, reason: RawData) {
     this.status = 'DISCONNECTED';
@@ -125,6 +197,10 @@ class Shard extends EventEmitter {
     }
   }
 
+  /**
+   * Handles gateway OP codes
+   * @param data Data received from the gateway
+   */
   private handleOPCodes(data: any) {
     switch (data.op) {
       case GatewayOpcodes.Dispatch:
@@ -173,6 +249,28 @@ class Shard extends EventEmitter {
     }
   }
 
+  /**
+   * Reconnects to the gateway
+   */
+  private reconnect() {
+    if (this.status !== 'DISCONNECTED') return;
+    this.status = 'RECONNECTING';
+    let attempts = this.client.reconnectAttempts ?? Infinity;
+    const reconnectInterval = setInterval(() => {
+      if (attempts === 0) {
+        clearInterval(reconnectInterval);
+        this.status = 'DISCONNECTED';
+        return;
+      }
+      clearInterval(this.heartbeatInterval);
+      this.initWS();
+      attempts--;
+    }, 5000);
+  }
+
+  /**
+   * Sends an identify payload to the gateway
+   */
   private identify() {
     this.ws.send(
       JSON.stringify({
@@ -190,6 +288,10 @@ class Shard extends EventEmitter {
       })
     );
   }
+
+  /**
+   * Sends a resume payload to the gateway
+   */
   private resume() {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.status = 'RESUMING';
@@ -205,22 +307,10 @@ class Shard extends EventEmitter {
       );
     }
   }
-  private reconnect() {
-    if (this.status !== 'DISCONNECTED') return;
-    this.status = 'RECONNECTING';
-    let attempts = this.client.reconnectAttempts ?? Infinity;
-    const reconnectInterval = setInterval(() => {
-      if (attempts === 0) {
-        clearInterval(reconnectInterval);
-        this.status = 'DISCONNECTED';
-        return;
-      }
-      clearInterval(this.heartbeatInterval);
-      this.initWS();
-      attempts--;
-    }, 5000);
-  }
 
+  /**
+   * Sends a heartbeat payload to the gateway
+   */
   private heartbeat() {
     if (this.ws && this.ws.readyState === WebSocket.OPEN)
       this.ws.send(
