@@ -7,6 +7,7 @@ import { RequestHandler } from '../handlers/RequestHandler';
 
 interface ClientOptions {
   token: string;
+  reconnectAttempts?: number;
   compress?: boolean;
   largeThreshold?: number;
 }
@@ -15,8 +16,9 @@ class BaseClient extends EventEmitter {
   public token: string;
   public compress: boolean;
   public largeThreshold: number;
-  public shard: Shard;
+  public reconnectAttempts: number | null;
 
+  public shard: Shard;
   public requestHandler: RequestHandler;
 
   public _userAgent: string; // TODO: dodaj ovo
@@ -27,6 +29,7 @@ class BaseClient extends EventEmitter {
     this.token = options.token;
     this.compress = options.compress ?? false;
     this.largeThreshold = options.largeThreshold ?? 50;
+    this.reconnectAttempts = options.reconnectAttempts ?? 5; // It can be null if the user want infinite reconnect attempts
     this.shard = new Shard(this);
 
     this.requestHandler = new RequestHandler(this);
