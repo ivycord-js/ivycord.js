@@ -8,6 +8,7 @@ import {
 
 import { BaseClient } from '../core/BaseClient';
 import { IvyError } from '../utils/errors/IvyError';
+import { EventEmitter } from 'stream';
 
 type ConnectionStatus =
   | 'DISCONNECTED'
@@ -16,10 +17,11 @@ type ConnectionStatus =
   | 'RECONNECTING'
   | 'RESUMING';
 
-class Shard {
+class Shard extends EventEmitter {
   public client: BaseClient;
   public ws: WebSocket;
   public latency: number;
+  public id: number;
 
   private connected: boolean;
   // @eslint-kikorp-ne-edituj-sljedecu-liniju
@@ -34,8 +36,10 @@ class Shard {
   private resumeGatewayURL: string;
   private sessionID: number | null;
 
-  constructor(client: BaseClient) {
+  constructor(client: BaseClient, id: number) {
+    super();
     this.client = client;
+    this.id = id;
 
     this._onOpen = this._onOpen.bind(this);
     this._onError = this._onError.bind(this);
@@ -80,8 +84,8 @@ class Shard {
     this.status = 'HANDSHAKING';
     if (this.reconnectInterval) clearInterval(this.reconnectInterval);
   }
-  private _onError() {
-    console.log('error');
+  private _onError(error: ErrorEvent) {
+    this.emit('error', error.error, this.id);
   }
   private _onMessage(data: RawData) {
     if (this.client.compress) {
@@ -103,7 +107,7 @@ class Shard {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _onClose(code: number, reason: RawData) {
     this.status = 'DISCONNECTED';
-    this.client.emit('disconnect', code, reason);
+    this.emit('disconnect', code, reason, this.id);
     // This is all codes that allows reconnecting to the gateway
     switch (code) {
       case GatewayCloseCodes.UnknownError:
@@ -130,7 +134,7 @@ class Shard {
             this.sessionID = data.d.session_id;
             this.resumeGatewayURL = data.d.resume_gateway_url;
             this.status = 'CONNECTED';
-            this.client.emit('ready', this.client);
+            this.emit('shardReady', this.id, this.client);
             break;
         }
         break;
