@@ -6,15 +6,34 @@ import { IvyError } from '../utils/errors/IvyError';
 
 const BASE_URL = 'https://discord.com/api/v10';
 
+/**
+ * Request method type
+ */
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
+/**
+ * Represents a request handler which is responsible for communicating with the REST API
+ */
 class RequestHandler {
+  /**
+   * The client that instantiates this request handler
+   */
   private client: BaseClient;
 
+  /**
+   * Creates a new instance of the request handler
+   * @param client The client that instantiates this request handler
+   */
   constructor(client: BaseClient) {
     this.client = client;
   }
 
+  /**
+   * Sends a request to the Discord API
+   * @param method Request method used
+   * @param endpoint Endpoint the request is sent to
+   * @param body Body of the request
+   */
   async request<T>(
     method: RequestMethod,
     endpoint: string,
