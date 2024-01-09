@@ -2,4 +2,4 @@
 /dist
 /.turbo
 
-**/*.yaml
+**/pnpm-lock.yaml
