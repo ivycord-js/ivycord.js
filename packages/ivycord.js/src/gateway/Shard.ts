@@ -1,4 +1,8 @@
-import { GatewayCloseCodes, GatewayOpcodes, GatewayVersion } from 'discord-api-types/gateway/v10';
+import {
+  GatewayCloseCodes,
+  GatewayOpcodes,
+  GatewayVersion
+} from 'discord-api-types/gateway/v10';
 import { EventEmitter, RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 

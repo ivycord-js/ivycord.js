@@ -9,8 +9,6 @@ class ShardingManager {
     this.client = client;
     this.shards = []; // TODO: napravit jebeni collection umjesto ovoga
   }
-
-  
 }
 
 export { ShardingManager };

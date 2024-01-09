@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "@ivycord-js/collection",
   "version": "0.0.1",
   "description": "An extension of the standard JavaScript Map class.",
@@ -62,15 +61,4 @@
     "prettier": "^3.1.1",
     "typescript": "^5.3.3"
   }
-=======
-  "name": "Collection",
-  "version": "1.0.0",
-  "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
->>>>>>> 963eca50af787f7ea265a8665fb13b5be9981ee3
 }
