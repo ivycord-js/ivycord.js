@@ -1,0 +1,19 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "outputMode": "errors-only"
+    },
+    "lint": {
+      "outputMode": "errors-only"
+    },
+    "check-format": {
+      "outputMode": "errors-only"
+    },
+    "run-format": {
+      "outputMode": "errors-only"
+    }
+  }
+}
