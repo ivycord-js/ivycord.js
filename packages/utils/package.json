@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@ivycord-js/collection",
+  "name": "@ivycord-js/utils",
   "version": "0.0.1",
-  "description": "An extension of the standard JavaScript Map class.",
+  "description": "All of the utility functions used by the library.",
   "license": "MIT",
   "homepage": "https://ivycord.js.org",
   "scripts": {
@@ -26,7 +26,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ivycord-js/ivycord.js.git",
-    "directory": "packages/collection"
+    "directory": "packages/utils"
   },
   "bugs": {
     "url": "https://github.com/ivycord-js/ivycord.js/issues"
