@@ -5,11 +5,6 @@
   "private": true,
   "license": "MIT",
   "homepage": "https://ivycord.js.org",
-  "scripts": {
-    "lint": "eslint ./packages/ivycord.js",
-    "check-format": "prettier ./packages/ivycord.js --check",
-    "run-format": "prettier ./packages/ivycord.js --write"
-  },
   "contributors": [
     "null68",
     "kikorp78",
@@ -33,9 +28,5 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@8.14.0",
-  "devDependencies": {
-    "eslint": "^8.56.0",
-    "prettier": "^3.1.1"
-  }
+  "packageManager": "pnpm@8.14.0"
 }

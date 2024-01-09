@@ -3,11 +3,11 @@ name: Tests
 on:
   push:
     branches:
-      - 'master'
+      - "master"
 
   pull_request:
     branches:
-      - 'master'
+      - "master"
 
 jobs:
   deploy:
@@ -31,10 +31,13 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
+        working-directory: ./packages/ivycord.js
         run: pnpm i
 
       - name: Run ESLint
+        working-directory: ./packages/ivycord.js
         run: pnpm lint
 
       - name: Run Prettier
+        working-directory: ./packages/ivycord.js
         run: pnpm check-format
