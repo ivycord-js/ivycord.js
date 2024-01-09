@@ -1,8 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import { BaseClient } from '../core/BaseClient';
-import { VERSION } from '../utils/constants';
-import { IvyError } from '../utils/errors/IvyError';
+import { Constants, IvyError } from '@ivycord-js/utils';
 
 const BASE_URL = 'https://discord.com/api/v10';
 
@@ -16,16 +14,16 @@ type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
  */
 class RequestHandler {
   /**
-   * The client that instantiates this request handler
+   * The token of the bot
    */
-  private client: BaseClient;
+  private token: string;
 
   /**
    * Creates a new instance of the request handler
-   * @param client The client that instantiates this request handler
+   * @param token The token of the bot
    */
-  constructor(client: BaseClient) {
-    this.client = client;
+  constructor(token: string) {
+    this.token = token;
   }
 
   /**
@@ -42,9 +40,9 @@ class RequestHandler {
     try {
       const headers = {
         'Content-Type': 'application/json',
-        'User-Agent': `DiscordBot (Ivycord/${VERSION})`,
-        Authorization: `${this.client.token.startsWith('Bot ') ? '' : 'Bot '}${
-          this.client.token
+        'User-Agent': `DiscordBot (Ivycord/${Constants.VERSION})`,
+        Authorization: `${this.token.startsWith('Bot ') ? '' : 'Bot '}${
+          this.token
         }`
       };
       const res = await axios({

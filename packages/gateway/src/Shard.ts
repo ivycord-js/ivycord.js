@@ -3,11 +3,11 @@ import {
   GatewayOpcodes,
   GatewayVersion
 } from 'discord-api-types/gateway/v10';
+import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import { EventEmitter, RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
-import { BaseClient } from '../core/BaseClient';
-import { IvyError } from '../utils/errors/IvyError';
+import { IvyError } from '@ivycord-js/utils';
 
 /**
  * Gateway connection status type
@@ -19,16 +19,33 @@ type ConnectionStatus =
   | 'RECONNECTING'
   | 'RESUMING';
 
+interface ShardOptions {
+  /**
+   * The token of the bot
+   */
+  token: string;
+
+  /**
+   * The number of reconnect attempts before giving up
+   */
+  reconnectAttempts?: number;
+
+  /**
+   * Whether to compress the gateway data or not
+   */
+  compress?: boolean;
+
+  /**
+   * The gateway data
+   */
+  _gatewayData?: APIGatewayBotInfo;
+}
+
 /**
  * Represents a Discord shard
  * @extends {EventEmitter}
  */
 class Shard extends EventEmitter {
-  /**
-   * The client that manages this shard
-   */
-  public client: BaseClient;
-
   /**
    * The WebSocket connection of the shard
    */
@@ -43,6 +60,26 @@ class Shard extends EventEmitter {
    * The ID of the shard
    */
   public id: number;
+
+  /**
+   * The token of the bot
+   */
+  public token: string;
+
+  /**
+   * The number of reconnect attempts before giving up
+   */
+  public reconnectAttempts: number | null;
+
+  /**
+   * The gateway data
+   */
+  public _gatewayData: APIGatewayBotInfo | null;
+
+  /**
+   * Whether to compress the gateway data or not
+   */
+  public compress: boolean;
 
   /**
    * The current gateway connection status of the shard
@@ -92,11 +129,17 @@ class Shard extends EventEmitter {
   /**
    * Creates a new instance of the shard
    * @param client The client that manages this shard
+   * @param id The ID of the shard
+   * @param options Options for the shard
    */
-  constructor(client: BaseClient, id: number) {
+  constructor(id: number, options: ShardOptions) {
     super();
-    this.client = client;
     this.id = id;
+
+    this.token = options.token;
+    this.reconnectAttempts = options.reconnectAttempts ?? 5; // It can be null if the user want infinite reconnect attempts
+    this.compress = options.compress ?? false;
+    this._gatewayData = options._gatewayData ?? null;
 
     this._onOpen = this._onOpen.bind(this);
     this._onError = this._onError.bind(this);
@@ -110,7 +153,7 @@ class Shard extends EventEmitter {
   initWS() {
     if (this.status !== 'DISCONNECTED')
       throw new IvyError('WS_ALREADY_CONNECTED');
-    if (this.client.compress) {
+    if (this.compress) {
       this.inflate = new Inflate({
         chunkSize: 65535,
         to: 'string'
@@ -118,8 +161,8 @@ class Shard extends EventEmitter {
     }
     if (!this.sessionID) {
       this.ws = new WebSocket(
-        `${this.client._gatewayData.url}/?v=${GatewayVersion}&encoding=json${
-          this.client.compress ? '&compress=zlib-stream' : ''
+        `${this._gatewayData?.url}/?v=${GatewayVersion}&encoding=json${
+          this.compress ? '&compress=zlib-stream' : ''
         }`
       );
     } else {
@@ -127,9 +170,9 @@ class Shard extends EventEmitter {
       // TODO: dodati warn ako nema resumeGatewayURL, zato sto ce se cesto disconnectovat nakon resuma zbog toga
       this.ws = new WebSocket(
         `${
-          this.resumeGatewayURL || this.client._gatewayData.url
+          this.resumeGatewayURL || this._gatewayData?.url
         }/?v=${GatewayVersion}&encoding=json${
-          this.client.compress ? '&compress=zlib-stream' : ''
+          this.compress ? '&compress=zlib-stream' : ''
         }`
       );
     }
@@ -159,7 +202,7 @@ class Shard extends EventEmitter {
    * @param data Data received from the gateway
    */
   private _onMessage(data: RawData) {
-    if (this.client.compress) {
+    if (this.compress) {
       let buffer = Buffer.alloc(0);
       buffer = Buffer.concat([buffer, data as Buffer]);
       const zlibSuffix = Buffer.from([0x00, 0x00, 0xff, 0xff]);
@@ -214,7 +257,7 @@ class Shard extends EventEmitter {
             this.sessionID = data.d.session_id;
             this.resumeGatewayURL = data.d.resume_gateway_url;
             this.status = 'CONNECTED';
-            this.emit('shardReady', this.id, this.client);
+            this.emit('shardReady', this.id);
             break;
         }
         break;
@@ -248,7 +291,6 @@ class Shard extends EventEmitter {
       case GatewayOpcodes.HeartbeatAck:
         this.lastHeartbeatAck = Date.now();
         this.latency = this.lastHeartbeatAck - this.lastHeartbeat;
-        this.client.emit('heartbeat');
         break;
     }
   }
@@ -259,7 +301,7 @@ class Shard extends EventEmitter {
   private reconnect() {
     if (this.status !== 'DISCONNECTED') return;
     this.status = 'RECONNECTING';
-    let attempts = this.client.reconnectAttempts ?? Infinity;
+    let attempts = this.reconnectAttempts ?? Infinity;
     const reconnectInterval = setInterval(() => {
       if (attempts === 0) {
         clearInterval(reconnectInterval);
@@ -280,8 +322,8 @@ class Shard extends EventEmitter {
       JSON.stringify({
         op: 2,
         d: {
-          token: this.client.token,
-          compress: this.client.compress,
+          token: this.token,
+          compress: this.compress,
           properties: {
             os: process.platform,
             browser: 'ivycord.js',
@@ -303,7 +345,7 @@ class Shard extends EventEmitter {
         JSON.stringify({
           op: 6,
           d: {
-            token: this.client.token,
+            token: this.token,
             session_id: this.sessionID,
             seq: this.sequence
           }

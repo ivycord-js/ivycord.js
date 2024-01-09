@@ -1,9 +1,9 @@
 import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import { EventEmitter } from 'ws';
 
-import { Shard } from '../gateway/Shard';
-import { RequestHandler } from '../handlers/RequestHandler';
-import { IvyError } from '../utils/errors/IvyError';
+import { Shard } from '@ivycord-js/gateway';
+import { RequestHandler } from '@ivycord-js/rest';
+import { IvyError } from '@ivycord-js/utils';
 
 /**
  * Options for the client
@@ -86,8 +86,13 @@ class BaseClient extends EventEmitter {
     this.compress = options.compress ?? false;
     this.largeThreshold = options.largeThreshold ?? 50;
 
-    this.shard = new Shard(this, 1);
-    this.requestHandler = new RequestHandler(this);
+    this.shard = new Shard(1, {
+      token: this.token,
+      reconnectAttempts: this.reconnectAttempts,
+      compress: this.compress,
+      _gatewayData: this._gatewayData
+    });
+    this.requestHandler = new RequestHandler(this.token);
 
     if (this.largeThreshold < 50 || this.largeThreshold > 250) {
       throw new IvyError('LARGE_THRESHOLD_INVALID');

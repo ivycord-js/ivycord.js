@@ -51,11 +51,51 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  packages/ivycord.js:
+  packages/core:
     dependencies:
-      axios:
-        specifier: ^1.6.5
-        version: 1.6.5
+      '@ivycord-js/gateway':
+        specifier: workspace:^
+        version: link:../gateway
+      '@ivycord-js/rest':
+        specifier: workspace:^
+        version: link:../rest
+      '@ivycord-js/utils':
+        specifier: workspace:^
+        version: link:../utils
+      discord-api-types:
+        specifier: ^0.37.67
+        version: 0.37.67
+      ws:
+        specifier: ^8.16.0
+        version: 8.16.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.10.8
+      '@types/ws':
+        specifier: ^8.5.10
+        version: 8.5.10
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.17.0
+        version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.17.0
+        version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.56.0
+        version: 8.56.0
+      prettier:
+        specifier: ^3.1.1
+        version: 3.1.1
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
+  packages/gateway:
+    dependencies:
+      '@ivycord-js/utils':
+        specifier: workspace:^
+        version: link:../utils
       discord-api-types:
         specifier: ^0.37.67
         version: 0.37.67
@@ -72,6 +112,55 @@ importers:
       '@types/ws':
         specifier: ^8.5.10
         version: 8.5.10
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.17.0
+        version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.17.0
+        version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.56.0
+        version: 8.56.0
+      prettier:
+        specifier: ^3.1.1
+        version: 3.1.1
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
+  packages/rest:
+    dependencies:
+      '@ivycord-js/utils':
+        specifier: workspace:^
+        version: link:../utils
+      axios:
+        specifier: ^1.6.5
+        version: 1.6.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.10.8
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.17.0
+        version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.17.0
+        version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.56.0
+        version: 8.56.0
+      prettier:
+        specifier: ^3.1.1
+        version: 3.1.1
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
+  packages/utils:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.10.8
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.17.0
         version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)

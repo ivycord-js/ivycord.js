@@ -1,4 +1,4 @@
-const { BaseClient } = require('../packages/ivycord.js/dist/index');
+const { BaseClient } = require('ivycord.js');
 
 const client = new BaseClient({
   token: 'YOUR_TOKEN',
@@ -6,11 +6,7 @@ const client = new BaseClient({
 });
 
 client.on('ready', () => {
-  console.log('ready, latency ' + client.shard.latency);
-});
-
-client.on('heartbeat', () => {
-  console.log('heartbeat received');
+  console.log('ready, latency: ' + client.shard.latency);
 });
 
 client.connect();
