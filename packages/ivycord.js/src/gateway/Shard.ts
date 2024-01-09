@@ -38,6 +38,10 @@ class Shard extends EventEmitter {
    * The WebSocket latency of the shard
    */
   public latency: number;
+
+  /**
+   * The ID of the shard
+   */
   public id: number;
 
   /**
