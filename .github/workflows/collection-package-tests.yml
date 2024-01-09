@@ -1,0 +1,43 @@
+name: Collection Package Tests
+
+on:
+  push:
+    branches:
+      - "master"
+
+  pull_request:
+    branches:
+      - "master"
+
+jobs:
+  deploy:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: ./packages/collection
+        run: pnpm i
+
+      - name: Run ESLint
+        working-directory: ./packages/collection
+        run: pnpm lint
+
+      - name: Run Prettier
+        working-directory: ./packages/collection
+        run: pnpm check-format

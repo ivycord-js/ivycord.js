@@ -1,74 +1,62 @@
 /**
- * A collection of key-value pairs.
+ * Represents a collection of key-value pairs
  * @extends {Map}
  */
-export class Collection extends Map {
+export class Collection<KeyType, ValueType> extends Map<KeyType, ValueType> {
   /**
    * The maximum number of entries allowed in this collection
-   * @default null
    */
   private limit: number | null;
+
+  /**
+   * Creates a new instance of the collection
+   * @param limit The maximum number of entries allowed in this collection
+   */
   constructor(limit?: number) {
     super();
     this.limit = limit ?? null;
   }
+
+  /**
+   * Adds a key-value pair to the collection
+   * @param key Key to add
+   * @param value Value associated with the key
+   * @param replace Whether to replace the value if the key already exists
+   */
+  add(key: KeyType, value: ValueType, replace = true) {
+    if (this.limit && this.size >= this.limit) return this;
+    if (!replace && this.has(key)) return this;
+    this.set(key, value);
+    return this;
+  }
+
   /**
    * Returns the first value in the collection
    */
   first() {
-    return this.values().next().value;
+    return [...this.values()][0];
   }
+
   /**
    * Returns the last value in the collection
    */
   last() {
-    return [...this.values()].pop();
+    return [...this.values()][this.size - 1];
   }
+
   /**
    * Returns a random value from the collection
    */
   random() {
     return [...this.values()][Math.floor(Math.random() * this.size)];
   }
-  /**
-   * Returns an array of values from the collection
-   */
-  array() {
-    return [...this.values()];
-  }
-  /**
-   * Returns an array of keys from the collection
-   */
-  keyArray() {
-    return [...this.keys()];
-  }
 
   /**
-   * Adds a key-value pair to the collection.
-   * If the key already exists, it will be replaced if the `replace` parameter is truthy.
-   * If the key already exists and `replace` is falsy, the method will return without making any changes.
-   * @param key - The key to add.
-   * @param value - The value to associate with the key.
-   * @param replace - A flag indicating whether to replace the existing value if the key already exists.
+   * Removes a key-value pair from the collection
+   * @param key Key to remove
    */
-  add(key: string, value: unknown, replace: number) {
-    if (this.has(key)) {
-      if (replace) {
-        this.delete(key);
-      } else {
-        return;
-      }
-    }
-    this.set(key, value);
-  }
-
-  /**
-   * Removes a key-value pair from the collection.
-   * @param key - The key to remove.
-   */
-  remove(key: string) {
-    if (!this.has(key)) return;
+  remove(key: KeyType) {
     this.delete(key);
+    return this;
   }
-  
 }
