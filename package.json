@@ -6,8 +6,9 @@
   "license": "MIT",
   "homepage": "https://ivycord.js.org",
   "scripts": {
-    "lint": "eslint .",
-    "format": "prettier . --check"
+    "lint": "eslint ./packages/ivycord.js",
+    "check-format": "prettier ./packages/ivycord.js --check",
+    "run-format": "prettier ./packages/ivycord.js --write"
   },
   "contributors": [
     "null68",
