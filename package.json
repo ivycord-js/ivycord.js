@@ -5,6 +5,10 @@
   "private": true,
   "license": "MIT",
   "homepage": "https://ivycord.js.org",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier . --check"
+  },
   "contributors": [
     "null68",
     "kikorp78",
