@@ -81,6 +81,10 @@ class Shard extends EventEmitter {
    */
   private sessionID: number | null;
 
+  /**
+   * Creates a new instance of the shard
+   * @param client The client that manages this shard
+   */
   constructor(client: BaseClient, id: number) {
     super();
     this.client = client;

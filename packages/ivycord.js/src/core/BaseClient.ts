@@ -86,7 +86,7 @@ class BaseClient extends EventEmitter {
     this.compress = options.compress ?? false;
     this.largeThreshold = options.largeThreshold ?? 50;
 
-    this.shard = new Shard(this);
+    this.shard = new Shard(this, 1);
     this.requestHandler = new RequestHandler(this);
 
     if (this.largeThreshold < 50 || this.largeThreshold > 250) {
