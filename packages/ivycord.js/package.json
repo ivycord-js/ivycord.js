@@ -5,7 +5,10 @@
   "license": "MIT",
   "homepage": "https://ivycord.js.org",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint .",
+    "check-format": "prettier . --check",
+    "run-format": "prettier . --write"
   },
   "contributors": [
     "null68",
