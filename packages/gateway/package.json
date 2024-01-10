@@ -7,6 +7,7 @@
   "homepage": "https://ivycord.js.org",
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --watch",
     "lint": "eslint .",
     "check-format": "prettier . --check",
     "run-format": "prettier . --write"
@@ -54,6 +55,7 @@
   },
   "packageManager": "pnpm@8.14.0",
   "dependencies": {
+    "@ivycord-js/rest": "workspace:^",
     "@ivycord-js/utils": "workspace:^",
     "discord-api-types": "^0.37.67",
     "ws": "^8.16.0",

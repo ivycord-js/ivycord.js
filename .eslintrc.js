@@ -1,5 +1,8 @@
 module.exports = {
   root: true,
+  env: {
+    node: true
+  },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'unused-imports'],
   extends: [
@@ -7,7 +10,7 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended'
   ],
-  ignorePatterns: ['.eslintrc.js', 'dist/**/*', 'examples/**/*'],
+  ignorePatterns: ['.eslintrc.js', 'dist/**/*'],
   rules: {
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

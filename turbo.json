@@ -6,6 +6,10 @@
       "outputs": ["dist/**"],
       "outputMode": "errors-only"
     },
+    "watch": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
     "lint": {
       "outputMode": "errors-only"
     },
