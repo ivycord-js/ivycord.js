@@ -1,3 +1,5 @@
+import { IvyError } from '@ivycord-js/utils';
+
 import {
   GatewayCloseCodes,
   GatewayOpcodes,
@@ -6,8 +8,6 @@ import {
 import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import { EventEmitter, RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
-
-import { IvyError } from '@ivycord-js/utils';
 
 /**
  * Gateway connection status type
