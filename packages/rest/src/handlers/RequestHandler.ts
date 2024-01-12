@@ -1,6 +1,6 @@
-import axios, { AxiosError } from 'axios';
-
 import { Constants, IvyError } from '@ivycord-js/utils';
+
+import axios, { AxiosError } from 'axios';
 
 const BASE_URL = 'https://discord.com/api/v10';
 

@@ -11,7 +11,8 @@
     "lint": "turbo lint",
     "check-format": "turbo check-format",
     "run-format": "turbo run-format",
-    "remove-all-builds": "find . -type d -name \"dist\" -exec rm -r {} +",
+    "remove-all-builds": "find . -type d -name \"dist\" -exec rm -rf {} +",
+    "remove-all-modules": "find . -type d -name \"node_modules\" -exec rm -rf {} +",
     "prepare": "husky install"
   },
   "contributors": [
@@ -38,10 +39,12 @@
   },
   "packageManager": "pnpm@8.14.0",
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "^8.0.3",
     "prettier": "^3.1.1",
     "turbo": "^1.11.3",

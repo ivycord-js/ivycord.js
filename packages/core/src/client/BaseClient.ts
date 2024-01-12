@@ -1,9 +1,9 @@
-import { APIGatewayBotInfo } from 'discord-api-types/v10';
-import { EventEmitter } from 'ws';
-
 import { Shard } from '@ivycord-js/gateway';
 import { RequestHandler } from '@ivycord-js/rest';
 import { IvyError } from '@ivycord-js/utils';
+
+import { APIGatewayBotInfo } from 'discord-api-types/v10';
+import { EventEmitter } from 'ws';
 
 /**
  * Options for the client
