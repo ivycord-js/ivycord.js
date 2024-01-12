@@ -1,4 +1,9 @@
-import { IvyError } from '@ivycord-js/utils';
+import {
+  IvyError,
+  IvyEventEmitter,
+  calculateBitfield,
+  sleep
+} from '@ivycord-js/utils';
 
 import {
   GatewayCloseCodes,
@@ -7,13 +12,6 @@ import {
 } from 'discord-api-types/gateway/v10';
 import { RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
-
-import {
-  calculateBitfield,
-  IvyError,
-  IvyEventEmitter,
-  sleep
-} from '@ivycord-js/utils';
 
 import { ShardingManager } from './ShardingManager';
 

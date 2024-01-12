@@ -1,10 +1,10 @@
+import { Rest } from '@ivycord-js/rest';
+import { IvyEventEmitter } from '@ivycord-js/utils';
+
 import {
   APIGatewayBotInfo,
   GatewayUpdatePresence
 } from 'discord-api-types/v10';
-
-import { Rest } from '@ivycord-js/rest';
-import { IvyEventEmitter } from '@ivycord-js/utils';
 
 import { ShardEvents } from './Shard';
 import { ShardingManager } from './ShardingManager';

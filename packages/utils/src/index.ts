@@ -1,8 +1,8 @@
 import { calculateBitfield } from './functions/calculateBitfield';
 import { sleep } from './functions/sleep';
 import { Collection } from './structures/Collection';
-import { IvyError } from './structures/errors/IvyError';
 import { IvyEventEmitter } from './structures/IvyEventEmitter';
+import { IvyError } from './structures/errors/IvyError';
 
 const Constants = {
   // eslint-disable-next-line @typescript-eslint/no-var-requires

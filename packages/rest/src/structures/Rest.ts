@@ -1,7 +1,7 @@
+import { Constants, IvyError } from '@ivycord-js/utils';
+
 import axios, { AxiosError } from 'axios';
 import { APIGatewayBotInfo, Routes } from 'discord-api-types/v10';
-
-import { Constants, IvyError } from '@ivycord-js/utils';
 
 /**
  * Request method used for a specific request sent to the Discord API.

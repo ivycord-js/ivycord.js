@@ -8,19 +8,12 @@
   "homepage": "https://ivycord.js.org",
   "scripts": {
     "build": "turbo build",
-<<<<<<< HEAD
     "lint": "turbo lint",
     "check-format": "turbo check-format",
     "run-format": "turbo run-format",
     "remove-all-builds": "find . -type d -name \"dist\" -exec rm -rf {} +",
     "remove-all-modules": "find . -type d -name \"node_modules\" -exec rm -rf {} +",
     "prepare": "husky install"
-=======
-    "watch": "turbo watch",
-    "lint": "turbo lint",
-    "check-format": "turbo check-format",
-    "run-format": "turbo run-format"
->>>>>>> 5f7c28d (fix: issues)
   },
   "contributors": [
     "null68",
