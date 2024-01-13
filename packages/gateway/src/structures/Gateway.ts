@@ -100,7 +100,7 @@ interface GatewayOptions {
  * Represents a structure used for communicating with the Discord gateway.
  * @extends {IvyEventEmitter}
  */
-class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
+class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
   /**
    * The authorization token of the client.
    */

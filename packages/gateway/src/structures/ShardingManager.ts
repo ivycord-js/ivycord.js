@@ -94,7 +94,7 @@ class ShardingManager {
           this.gateway.emit('rawEvent', {
             t: 'SHARD_READY',
             shardID: data.shardID,
-            d: null
+            d: data.d
           });
           if (this.allShardsReady()) {
             this.gateway.ready = true;

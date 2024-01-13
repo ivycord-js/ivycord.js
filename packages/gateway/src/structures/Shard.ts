@@ -340,15 +340,14 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
             this.emit('rawEvent', {
               t: 'SHARD_READY',
               shardID: this.id,
-              d: null
+              d: data.d
             });
-
             break;
           default:
             this.emit('rawEvent', {
-              t: 'RAW_EVENT',
+              t: data.t,
               shardID: this.id,
-              d: data
+              d: data.d
             });
             break;
         }

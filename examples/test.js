@@ -7,20 +7,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { Client } = require('../packages/core/dist/index');
 const { Rest } = require('../packages/rest/dist/index');
-const { Gateway } = require('../packages/gateway/dist/index');
+const { Gateway, GatewayIntents } = require('../packages/gateway/dist/index');
 
 const TOKEN = 'YOUR_TOKEN';
 
 const rest = new Rest(TOKEN);
 const gateway = new Gateway({
   token: TOKEN,
-  rest
+  rest,
+  intents: [GatewayIntents.GUILDS]
 });
 
 const client = new Client({ rest, gateway });
 
-client.gateway.on('ready', () => {
-  console.log('Client is online.');
+client.gateway.on('rawEvent', (data) => {
+  console.log(data);
 });
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 client.gateway.connect();
