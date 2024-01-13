@@ -49,7 +49,6 @@ interface GatewayEvents extends ShardEvents {
    * Emitted when the gateway is ready.
    */
   ready: () => void;
-
 }
 
 /**
@@ -182,9 +181,14 @@ class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
     this.intents = options?.intents ?? 0;
     this.shardsStart = options?.shardsStart ?? 0;
 
-    if (this.shardCount === 'auto' && this.shardsStart !== 0){
-      this.emit("rawEvent", { t: "ERROR", d: { message: "Cannot use \"auto\" as the shard count when shardsStart is not 0." }});
-      
+    if (this.shardCount === 'auto' && this.shardsStart !== 0) {
+      this.emit('rawEvent', {
+        t: 'ERROR',
+        d: {
+          message:
+            'Cannot use "auto" as the shard count when shardsStart is not 0.'
+        }
+      });
     }
   }
 
