@@ -9,7 +9,8 @@ const { Client } = require('../packages/core/dist/index');
 const { Rest } = require('../packages/rest/dist/index');
 const { Gateway, GatewayIntents } = require('../packages/gateway/dist/index');
 
-const TOKEN = 'YOUR_TOKEN';
+const TOKEN =
+  'MTE1MzA1MDg2NjkzMzMwOTUwMA.GBsLfu.OSIzABkzZHEsO02wWuYcaQZCIMJOtwoVEPdYT8';
 
 const rest = new Rest(TOKEN);
 const gateway = new Gateway({
@@ -20,8 +21,8 @@ const gateway = new Gateway({
 
 const client = new Client({ rest, gateway });
 
-client.gateway.on('rawEvent', (data) => {
-  console.log(data);
+client.on('ready', () => {
+  console.log('ready');
 });
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
