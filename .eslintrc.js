@@ -4,6 +4,9 @@ module.exports = {
     node: true
   },
   parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json'
+  },
   plugins: ['@typescript-eslint', 'unused-imports'],
   extends: [
     'eslint:recommended',
@@ -16,6 +19,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/await-thenable': 'error',
+    '@typescript-eslint/no-floating-promises': 'error',
     'no-case-declarations': 'off',
     'no-inner-declarations': 'off',
     'unused-imports/no-unused-vars': [

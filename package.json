@@ -8,7 +8,8 @@
   "homepage": "https://ivycord.js.org",
   "scripts": {
     "build": "turbo build",
-    "lint": "turbo lint",
+    "watch": "turbo watch",
+    "lint": "turbo lint --force",
     "check-format": "turbo check-format",
     "run-format": "turbo run-format",
     "remove-all-builds": "find . -type d -name \"dist\" -exec rm -rf {} +",
