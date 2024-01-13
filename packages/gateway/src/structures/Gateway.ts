@@ -109,7 +109,7 @@ class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
   /**
    * The REST client used for sending requests to Discord API.
    */
-  public rest: Rest | null = null;
+  public rest: Rest;
 
   /**
    * The number of reconnect attempts before giving up.
