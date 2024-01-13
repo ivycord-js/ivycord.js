@@ -44,12 +44,7 @@ interface GatewayData extends APIGatewayBotInfo {
 /**
  * All events emitted by the gateway.
  */
-interface GatewayEvents extends ShardEvents {
-  /**
-   * Emitted when the gateway receives a raw event from a shard.
-   */
-  rawShardEvent: () => void;
-}
+interface GatewayEvents extends ShardEvents {}
 
 /**
  * Options for the gateway.
