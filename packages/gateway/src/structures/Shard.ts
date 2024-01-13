@@ -1,8 +1,7 @@
 import {
   IvyError,
   IvyEventEmitter,
-  calculateBitfield,
-  sleep
+  calculateBitfield
 } from '@ivycord-js/utils';
 
 import {
@@ -25,50 +24,22 @@ type ConnectionStatus =
   | 'RECONNECTING'
   | 'RESUMING';
 
+interface RawEvent {
+  t: string;
+  shardID?: number;
+  d: unknown;
+}
+
 /**
  * All events emitted by the shard.
  */
 interface ShardEvents {
   /**
-   * Emitted when the shard is ready.
-   * @param id The ID of the shard that emits this event.
-   */
-  shardReady: (id: number) => void;
-
-  /**
-   * Emitted when the shard disconnects.
-   * @param id The ID of the shard that emits this event.
-   */
-  shardDisconnect: (id: number) => void;
-
-  /**
-   * Emitted when the shard closes.
-   * @param id The ID of the shard that emits this event.
-   * @param code The close code.
-   * @param reason The reason for closing.
-   */
-  shardClose: (id: number, code: number, reason: RawData) => void;
-
-  /**
-   * Emitted when the shard encounters an error.
-   * @param id The ID of the shard that emits this event.
-   * @param error The error received from the gateway.
-   */
-  shardError: (id: number, error: ErrorEvent) => void;
-
-  /**
-   * Emitted when the shard issues a warning.
-   * @param id The ID of the shard that emits this event.
-   * @param warning The warning reason.
-   */
-  shardWarn: (id: number, warning: string) => void;
-
-  /**
    * Emitted when the shard receives a raw event.
    * @param id The ID of the shard that emits this event.
    * @param data The data received from the gateway.
    */
-  rawEvent: (id: number, data: RawData) => void;
+  rawEvent: (data: RawEvent) => void;
 }
 
 /**
@@ -183,11 +154,11 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
       );
     } else {
       if (!this.resumeGatewayURL)
-        this.emit(
-          'shardWarn',
-          this.id,
-          'Resume URL not found. Using gateway URL.'
-        );
+        this.emit('rawEvent', {
+          t: 'SHARD_WARN',
+          shardID: this.id,
+          d: 'Resume URL not found. Using gateway URL.'
+        });
       this.ws = new WebSocket(
         `${
           this.resumeGatewayURL ?? this.manager.gateway._gatewayData?.url
@@ -238,8 +209,11 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
    */
   private _onClose(code: number, reason: RawData) {
     this.status = 'DISCONNECTED';
-    this.emit('shardClose', this.id, code, reason);
-
+    this.emit('rawEvent', {
+      t: 'SHARD_CLOSE',
+      shardID: this.id,
+      d: { code, reason }
+    });
     switch (code) {
       case GatewayCloseCodes.AuthenticationFailed:
       case GatewayCloseCodes.InvalidShard:
@@ -259,7 +233,11 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
    * @param error The error received from the gateway.
    */
   private _onError(error: ErrorEvent) {
-    this.emit('shardError', this.id, error);
+    this.emit('rawEvent', {
+      t: 'SHARD_ERROR',
+      shardID: this.id,
+      d: error
+    });
   }
 
   /**
@@ -269,7 +247,11 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
     if (this.ws?.readyState !== WebSocket.OPEN) return;
     this.ws.close();
     this.status = 'DISCONNECTED';
-    this.emit('shardDisconnect', this.id);
+    this.emit('rawEvent', {
+      t: 'SHARD_DISCONNECT',
+      shardID: this.id,
+      d: null
+    });
   }
 
   /**
@@ -296,15 +278,8 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
   /**
    * Sends an identify payload to the gateway.
    */
-  private async identify() {
+  private identify() {
     if (this.ws?.readyState !== WebSocket.OPEN) return;
-    await sleep(
-      1000 *
-        this.id *
-        (5 /
-          (this.manager.gateway._gatewayData?.session_start_limit
-            .max_concurrency ?? 1))
-    );
     const intents = this.manager.gateway.intents;
     this.send(GatewayOpcodes.Identify, {
       token: this.manager.gateway.token,
@@ -360,10 +335,19 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
             this.unavailableGuilds = data.d.guilds.map(
               (guild: { id: string; unavailable: boolean }) => guild.id
             );
-            this.emit('shardReady', this.id);
+            this.emit('rawEvent', {
+              t: 'SHARD_READY',
+              shardID: this.id,
+              d: null
+            });
+
             break;
           default:
-            this.emit('rawEvent', this.id, data);
+            this.emit('rawEvent', {
+              t: 'RAW_EVENT',
+              shardID: this.id,
+              d: data
+            });
             break;
         }
         break;
@@ -415,4 +399,4 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
   }
 }
 
-export { Shard, ShardEvents };
+export { Shard, ShardEvents, RawEvent };

@@ -49,6 +49,7 @@ interface GatewayEvents extends ShardEvents {
    * Emitted when the gateway is ready.
    */
   ready: () => void;
+
 }
 
 /**
@@ -86,6 +87,11 @@ interface GatewayOptions {
   shardCount?: number | 'auto';
 
   /**
+   * The starting number of shards for the gateway.
+   */
+  shardsStart?: number;
+
+  /**
    * The presence data to send to the gateway.
    */
   presence?: GatewayUpdatePresence;
@@ -100,7 +106,7 @@ interface GatewayOptions {
  * Represents a structure used for communicating with the Discord gateway.
  * @extends {IvyEventEmitter}
  */
-class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
+class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
   /**
    * The authorization token of the client.
    */
@@ -131,6 +137,10 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
    */
   public shardCount: number | 'auto';
 
+  /**
+   * The starting number of shards for the gateway.
+   */
+  public shardsStart: number;
   /**
    * The presence data to send to the gateway.
    */
@@ -170,6 +180,12 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
     this.shardCount = options?.shardCount ?? 'auto';
     this.presence = options?.presence ?? null;
     this.intents = options?.intents ?? 0;
+    this.shardsStart = options?.shardsStart ?? 0;
+
+    if (this.shardCount === 'auto' && this.shardsStart !== 0){
+      this.emit("rawEvent", { t: "ERROR", d: { message: "Cannot use \"auto\" as the shard count when shardsStart is not 0." }});
+      
+    }
   }
 
   /**

@@ -1,7 +1,7 @@
-import { Collection } from '@ivycord-js/utils';
+import { Collection, sleep } from '@ivycord-js/utils';
 
 import { Gateway } from './Gateway';
-import { Shard } from './Shard';
+import { RawEvent, Shard } from './Shard';
 
 /**
  * Represents a Discord shard manager.
@@ -45,13 +45,14 @@ class ShardingManager {
     await this.gateway.fetchGatewayData();
     if (this.gateway.shardCount === 'auto') {
       for (let i = 0; i < this.gateway._gatewayData!.shards; i++) {
-        shardIDs.push(i);
+        shardIDs.push(this.gateway.shardsStart + i);
       }
-      this.shardCount = this.gateway._gatewayData!.shards;
+      this.shardCount =
+        this.gateway._gatewayData!.shards + this.gateway.shardsStart;
       return shardIDs;
     }
     for (let i = 0; i < this.gateway.shardCount; i++) {
-      shardIDs.push(i);
+      shardIDs.push(this.gateway.shardsStart + i);
     }
     return shardIDs;
   }
@@ -73,12 +74,14 @@ class ShardingManager {
    * Connects all shards to the gateway.
    * @returns A promise that resolves when all shards are connected.
    */
-  connectShards() {
-    const promises: void[] = [];
+  async connectShards() {
     for (const shard of this.shards.values()) {
-      promises.push(shard.initWS());
+      await sleep(
+        5000 /
+          (this.gateway._gatewayData!.session_start_limit.max_concurrency ?? 1)
+      );
+      shard.initWS();
     }
-    return Promise.all(promises);
   }
 
   /**
@@ -86,26 +89,24 @@ class ShardingManager {
    * @param shard The shard object.
    */
   handleShardEvents(shard: Shard) {
-    shard
-      .on('shardReady', (id) => {
-        if (this.allShardsReady()) {
-          this.gateway.ready = true;
-          this.gateway.emit('shardReady', id);
-          this.gateway.emit('ready');
-        } else this.gateway.emit('shardReady', id);
-      })
-      .on('shardDisconnect', (id) => {
-        this.gateway.emit('shardDisconnect', id);
-      })
-      .on('shardClose', (id, code, reason) => {
-        this.gateway.emit('shardClose', id, code, reason);
-      })
-      .on('shardError', (id, err) => {
-        this.gateway.emit('shardError', id, err);
-      })
-      .on('rawEvent', (id, data) => {
-        this.gateway.emit('rawEvent', id, data);
-      });
+    shard.on('rawEvent', (data: RawEvent) => {
+      switch (data.t) {
+        case 'SHARD_READY':
+          if (this.allShardsReady()) {
+            this.gateway.ready = true;
+            this.gateway.emit('rawEvent', { t: 'READY', d: null });
+          } else
+            this.gateway.emit('rawEvent', {
+              t: 'SHARD_READY',
+              shardID: data.shardID,
+              d: null
+            });
+          break;
+        default:
+          this.gateway.emit('rawEvent', data);
+          break;
+      }
+    });
     this.shards.add(shard.id, shard);
   }
 
