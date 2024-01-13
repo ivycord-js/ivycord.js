@@ -66,7 +66,7 @@ class ShardingManager {
       const shard = new Shard(id, this);
       this.handleShardEvents(shard);
     }
-    this.connectShards();
+    await this.connectShards();
   }
 
   /**
