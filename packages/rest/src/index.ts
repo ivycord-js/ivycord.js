@@ -1,3 +1,3 @@
-import { RequestHandler } from './handlers/RequestHandler';
+import { Rest } from './structures/Rest';
 
-export { RequestHandler };
+export { Rest };

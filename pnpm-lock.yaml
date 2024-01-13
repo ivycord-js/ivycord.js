@@ -39,33 +39,6 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  packages/collection:
-    devDependencies:
-      '@trivago/prettier-plugin-sort-imports':
-        specifier: ^4.3.0
-        version: 4.3.0(prettier@3.1.1)
-      '@types/node':
-        specifier: ^20.10.6
-        version: 20.10.8
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^6.17.0
-        version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: ^6.17.0
-        version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
-      eslint:
-        specifier: ^8.56.0
-        version: 8.56.0
-      eslint-plugin-unused-imports:
-        specifier: ^3.0.0
-        version: 3.0.0(@typescript-eslint/eslint-plugin@6.18.1)(eslint@8.56.0)
-      prettier:
-        specifier: ^3.1.1
-        version: 3.1.1
-      typescript:
-        specifier: ^5.3.3
-        version: 5.3.3
-
   packages/core:
     dependencies:
       '@ivycord-js/gateway':
@@ -77,12 +50,6 @@ importers:
       '@ivycord-js/utils':
         specifier: workspace:^
         version: link:../utils
-      discord-api-types:
-        specifier: ^0.37.67
-        version: 0.37.67
-      ws:
-        specifier: ^8.16.0
-        version: 8.16.0
     devDependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
@@ -90,9 +57,6 @@ importers:
       '@types/node':
         specifier: ^20.10.6
         version: 20.10.8
-      '@types/ws':
-        specifier: ^8.5.10
-        version: 8.5.10
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.17.0
         version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)
@@ -114,6 +78,9 @@ importers:
 
   packages/gateway:
     dependencies:
+      '@ivycord-js/rest':
+        specifier: workspace:^
+        version: link:../rest
       '@ivycord-js/utils':
         specifier: workspace:^
         version: link:../utils
@@ -163,6 +130,9 @@ importers:
       axios:
         specifier: ^1.6.5
         version: 1.6.5
+      discord-api-types:
+        specifier: ^0.37.67
+        version: 0.37.67
     devDependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
