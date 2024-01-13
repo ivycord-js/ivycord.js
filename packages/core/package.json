@@ -57,7 +57,8 @@
   "dependencies": {
     "@ivycord-js/gateway": "workspace:^",
     "@ivycord-js/rest": "workspace:^",
-    "@ivycord-js/utils": "workspace:^"
+    "@ivycord-js/utils": "workspace:^",
+    "fast-glob": "^3.3.2"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
