@@ -24,7 +24,10 @@ type ConnectionStatus =
   | 'RECONNECTING'
   | 'RESUMING';
 
-interface RawEvent {
+/**
+ * Represents raw event data.
+ */
+interface RawShardEventData {
   t: string;
   shardID?: number;
   d: unknown;
@@ -36,10 +39,9 @@ interface RawEvent {
 interface ShardEvents {
   /**
    * Emitted when the shard receives a raw event.
-   * @param id The ID of the shard that emits this event.
    * @param data The data received from the gateway.
    */
-  rawEvent: (data: RawEvent) => void;
+  rawEvent: (data: RawShardEventData) => void;
 }
 
 /**
@@ -185,7 +187,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
    * Handles the 'message' event received from the gateway.
    * @param data The data received from the gateway.
    */
-  private async _onMessage(data: RawData) {
+  private _onMessage(data: RawData) {
     if (this.manager.gateway.compress) {
       let buffer = Buffer.alloc(0);
       buffer = Buffer.concat([buffer, data as Buffer]);
@@ -199,7 +201,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
       data = Buffer.from(this.inflate?.result as string);
     }
     data = JSON.parse(data.toString());
-    await this.handleOPCodes(data);
+    this.handleOPCodes(data);
   }
 
   /**
@@ -322,7 +324,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
    * Handles gateway OP codes.
    * @param data Data received from the gateway.
    */
-  private async handleOPCodes(data: any) {
+  private handleOPCodes(data: any) {
     switch (data.op) {
       case GatewayOpcodes.Dispatch:
         this.sequence = data.s;
@@ -369,7 +371,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
         if (this.sessionID) this.resume();
         else {
           this.heartbeat();
-          await this.identify();
+          this.identify();
           this.heartbeatInterval = setInterval(
             () => this.heartbeat(),
             data.d.heartbeat_interval
@@ -399,4 +401,4 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
   }
 }
 
-export { Shard, ShardEvents, RawEvent };
+export { Shard, ShardEvents, RawShardEventData };

@@ -1,5 +1,5 @@
 import { Rest } from '@ivycord-js/rest';
-import { IvyEventEmitter } from '@ivycord-js/utils';
+import { IvyError, IvyEventEmitter } from '@ivycord-js/utils';
 
 import {
   APIGatewayBotInfo,
@@ -46,9 +46,9 @@ interface GatewayData extends APIGatewayBotInfo {
  */
 interface GatewayEvents extends ShardEvents {
   /**
-   * Emitted when the gateway is ready.
+   * Emitted when the gateway receives a raw event from a shard.
    */
-  ready: () => void;
+  rawShardEvent: () => void;
 }
 
 /**
@@ -86,9 +86,9 @@ interface GatewayOptions {
   shardCount?: number | 'auto';
 
   /**
-   * The starting number of shards for the gateway.
+   * The number from which the shard IDs should start.
    */
-  shardsStart?: number;
+  shardsStartFrom?: number;
 
   /**
    * The presence data to send to the gateway.
@@ -137,9 +137,10 @@ class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
   public shardCount: number | 'auto';
 
   /**
-   * The starting number of shards for the gateway.
+   * The number from which the shard IDs should start.
    */
-  public shardsStart: number;
+  public shardsStartFrom: number;
+
   /**
    * The presence data to send to the gateway.
    */
@@ -179,17 +180,10 @@ class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
     this.shardCount = options?.shardCount ?? 'auto';
     this.presence = options?.presence ?? null;
     this.intents = options?.intents ?? 0;
-    this.shardsStart = options?.shardsStart ?? 0;
+    this.shardsStartFrom = options?.shardsStartFrom ?? 0;
 
-    if (this.shardCount === 'auto' && this.shardsStart !== 0) {
-      this.emit('rawEvent', {
-        t: 'ERROR',
-        d: {
-          message:
-            'Cannot use "auto" as the shard count when shardsStart is not 0.'
-        }
-      });
-    }
+    if (this.shardCount === 'auto' && this.shardsStartFrom !== 0)
+      throw new IvyError('SHARD_COUNT_SHARDS_START_FROM_MISMATCH');
   }
 
   /**

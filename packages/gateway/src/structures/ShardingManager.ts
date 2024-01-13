@@ -1,7 +1,7 @@
 import { Collection, sleep } from '@ivycord-js/utils';
 
 import { Gateway } from './Gateway';
-import { RawEvent, Shard } from './Shard';
+import { RawShardEventData, Shard } from './Shard';
 
 /**
  * Represents a Discord shard manager.
@@ -45,14 +45,13 @@ class ShardingManager {
     await this.gateway.fetchGatewayData();
     if (this.gateway.shardCount === 'auto') {
       for (let i = 0; i < this.gateway._gatewayData!.shards; i++) {
-        shardIDs.push(this.gateway.shardsStart + i);
+        shardIDs.push(i);
       }
-      this.shardCount =
-        this.gateway._gatewayData!.shards + this.gateway.shardsStart;
+      this.shardCount = this.gateway._gatewayData!.shards;
       return shardIDs;
     }
     for (let i = 0; i < this.gateway.shardCount; i++) {
-      shardIDs.push(this.gateway.shardsStart + i);
+      shardIDs.push(this.gateway.shardsStartFrom + i);
     }
     return shardIDs;
   }
@@ -89,18 +88,18 @@ class ShardingManager {
    * @param shard The shard object.
    */
   handleShardEvents(shard: Shard) {
-    shard.on('rawEvent', (data: RawEvent) => {
+    shard.on('rawEvent', (data: RawShardEventData) => {
       switch (data.t) {
         case 'SHARD_READY':
+          this.gateway.emit('rawEvent', {
+            t: 'SHARD_READY',
+            shardID: data.shardID,
+            d: null
+          });
           if (this.allShardsReady()) {
             this.gateway.ready = true;
             this.gateway.emit('rawEvent', { t: 'READY', d: null });
-          } else
-            this.gateway.emit('rawEvent', {
-              t: 'SHARD_READY',
-              shardID: data.shardID,
-              d: null
-            });
+          }
           break;
         default:
           this.gateway.emit('rawEvent', data);

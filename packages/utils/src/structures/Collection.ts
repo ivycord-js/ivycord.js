@@ -82,7 +82,7 @@ class Collection<KeyType, ValueType> extends Map<KeyType, ValueType> {
   /**
    * Returns an array containing all the values in the collection.
    *
-   * @returns {Array<T>} An array containing all the values in the collection.
+   * @returns An array containing all the values in the collection.
    */
   toArray() {
     return [...this.values()];
@@ -90,8 +90,7 @@ class Collection<KeyType, ValueType> extends Map<KeyType, ValueType> {
 
   /**
    * Returns an array containing all the keys in the collection.
-   *
-   * @returns {Array<K>} An array containing all the keys in the collection.
+   * @returns An array containing all the keys in the collection.
    */
   keysArray() {
     return [...this.keys()];

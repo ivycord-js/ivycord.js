@@ -4,6 +4,8 @@ const messages = {
 
   // Gateway
   WS_ALREADY_CONNECTED: 'Already connected to the WebSocket',
+  SHARD_COUNT_SHARDS_START_FROM_MISMATCH:
+    'Cannot use "auto" as the shard count when shardsStartFrom option is not 0.',
 
   // REST
   FETCH_ERROR: 'An error occurred while fetching\n\n{message}'
