@@ -169,6 +169,7 @@ class Gateway extends IvyEventEmitter<keyof ShardEvents, GatewayEvents> {
   constructor(options: GatewayOptions) {
     super();
     this.token = options.token;
+    this.rest = options.rest;
     this.reconnectAttempts = options?.reconnectAttempts ?? null;
     this.compress = options?.compress ?? false;
     this.largeThreshold = options?.largeThreshold ?? 50;
