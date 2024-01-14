@@ -3,6 +3,7 @@ import {
   IvyEventEmitter,
   calculateBitfield
 } from '@ivycord-js/utils';
+import { hasBit } from '@ivycord-js/utils/dist/functions/calculateBitfield';
 
 import {
   GatewayCloseCodes,
@@ -12,6 +13,7 @@ import {
 import { RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
+import { GatewayIntents } from './Gateway';
 import { ShardingManager } from './ShardingManager';
 
 /**
@@ -20,9 +22,10 @@ import { ShardingManager } from './ShardingManager';
 type ConnectionStatus =
   | 'DISCONNECTED'
   | 'HANDSHAKING'
-  | 'CONNECTED'
   | 'RECONNECTING'
-  | 'RESUMING';
+  | 'RESUMING'
+  | 'WAITING_FOR_GUILDS'
+  | 'READY';
 
 /**
  * Represents raw event data.
@@ -97,12 +100,17 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
   /**
    * Interval for sending heartbeats.
    */
-  private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+  private heartbeatInterval: NodeJS.Timeout | null = null;
 
   /**
    * Interval for reconnecting to the gateway.
    */
-  private reconnectInterval: ReturnType<typeof setInterval> | null = null;
+  private reconnectInterval: NodeJS.Timeout | null = null;
+
+  /**
+   * Timeout for waiting for guilds to become available.
+   */
+  private readyTimeout: NodeJS.Timeout | null = null;
 
   /**
    * The URL for resuming the gateway connection.
@@ -320,6 +328,24 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
     this.lastHeartbeat = Date.now();
   }
 
+  private gotGuild(id: string) {
+    this.unavailableGuilds = this.unavailableGuilds.filter(
+      (guild) => guild !== id
+    );
+    if (!this.unavailableGuilds.length) this.status = 'READY';
+    if (hasBit(this.manager.gateway.intents as number, GatewayIntents.GUILDS)) {
+      if (this.readyTimeout) clearTimeout(this.readyTimeout);
+      this.readyTimeout = setTimeout(() => {
+        this.status = 'READY';
+        this.emit('rawEvent', {
+          t: 'GUILDS_UNAVAILABLE',
+          shardID: this.id,
+          d: this.unavailableGuilds
+        });
+      }, this.manager.gateway.waitGuildsTimeout);
+    } else this.status = 'READY';
+  }
+
   /**
    * Handles gateway OP codes.
    * @param data Data received from the gateway.
@@ -331,7 +357,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
         switch (data.t) {
           case 'RESUMED':
           case 'READY':
-            this.status = 'CONNECTED';
+            this.status = 'WAITING_FOR_GUILDS';
             this.resumeGatewayURL = data.d.resume_gateway_url;
             this.sessionID = data.d.session_id;
             this.unavailableGuilds = data.d.guilds.map(
@@ -339,6 +365,18 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
             );
             this.emit('rawEvent', {
               t: 'SHARD_READY',
+              shardID: this.id,
+              d: data.d
+            });
+            break;
+          case 'GUILD_CREATE':
+            if (data.d.unavailable) {
+              this.unavailableGuilds.push(data.d.id);
+              break;
+            }
+            this.gotGuild(data.d.id);
+            this.emit('rawEvent', {
+              t: 'GUILD_CREATE',
               shardID: this.id,
               d: data.d
             });

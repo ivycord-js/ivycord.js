@@ -7,4 +7,8 @@ const calculateBitfield = (bits: number[]) => {
   return bits.reduce((acc, bit) => acc | bit, 0);
 };
 
-export { calculateBitfield };
+const hasBit = (bitfield: number, bit: number) => {
+  return (bitfield & bit) === bit;
+};
+
+export { calculateBitfield, hasBit };

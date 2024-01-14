@@ -101,6 +101,7 @@ class ShardingManager {
             this.gateway.emit('rawEvent', { t: 'READY', d: null });
           }
           break;
+          
         default:
           this.gateway.emit('rawEvent', data);
           break;
@@ -114,7 +115,7 @@ class ShardingManager {
    * @returns True if all shards are connected, false otherwise.
    */
   allShardsReady() {
-    return this.shards.every((shard) => shard.status === 'CONNECTED');
+    return this.shards.every((shard) => shard.status === 'READY');
   }
 }
 
