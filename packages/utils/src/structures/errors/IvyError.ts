@@ -1,16 +1,16 @@
 const messages = {
   // Client
-  LARGE_THRESHOLD_INVALID: 'Large threshold must be between 50 and 250',
+  LARGE_THRESHOLD_INVALID: 'Large threshold must be between 50 and 250.',
   EVENTS_LOAD_FAILED:
     'Failed to load events. Try reinstalling the package or contact the developer.',
-  EVENT_NOT_IMPLEMENTED: "{message} event isn't implemented yet.",
+
   // Gateway
-  WS_ALREADY_CONNECTED: 'Already connected to the WebSocket',
+  WS_ALREADY_CONNECTED: 'Already connected to the WebSocket.',
   SHARD_COUNT_SHARDS_START_FROM_MISMATCH:
     'Cannot use "auto" as the shard count when shardsStartFrom option is not 0.',
 
   // REST
-  FETCH_ERROR: 'An error occurred while fetching\n\n{message}'
+  FETCH_ERROR: 'An error occurred while fetching:\n\n{message}'
 };
 
 /**

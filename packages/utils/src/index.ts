@@ -1,14 +1,10 @@
+import { Constants } from './constants';
 import { calculateBitfield } from './functions/calculateBitfield';
+import { hasBit } from './functions/hasBit';
 import { sleep } from './functions/sleep';
 import { Collection } from './structures/Collection';
 import { IvyEventEmitter } from './structures/IvyEventEmitter';
 import { IvyError } from './structures/errors/IvyError';
-
-const Constants = {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  VERSION: require('../../core/package.json').version,
-  BASE_URL: 'https://discord.com/api/v10'
-} as const;
 
 export {
   // Structure
@@ -21,5 +17,6 @@ export {
 
   // Functions
   sleep,
-  calculateBitfield
+  calculateBitfield,
+  hasBit
 };

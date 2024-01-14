@@ -10,7 +10,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'unused-imports', 'eslint-comments'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
-  ignorePatterns: ['.eslintrc.js', 'dist/**/*'],
+  ignorePatterns: ['.eslintrc.js', 'dist/**/*', 'examples/**/*'],
   rules: {
     // Default rules
     'arrow-parens': 'warn',
