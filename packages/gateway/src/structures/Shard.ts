@@ -333,7 +333,14 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
       (guild) => guild !== id
     );
     if (!this.unavailableGuilds.length) this.status = 'READY';
-    if (hasBit(this.manager.gateway.intents as number, GatewayIntents.GUILDS)) {
+    if (
+      hasBit(
+        typeof this.manager.gateway.intents === 'number'
+          ? this.manager.gateway.intents
+          : calculateBitfield(this.manager.gateway.intents),
+        GatewayIntents.GUILDS
+      )
+    ) {
       if (this.readyTimeout) clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
         this.status = 'READY';
