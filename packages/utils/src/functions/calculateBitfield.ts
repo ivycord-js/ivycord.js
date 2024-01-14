@@ -3,8 +3,11 @@
  * @param bits An array of numbers representing bits.
  * @returns The calculated bitfield as a number.
  */
-const calculateBitfield = (bits: number[]) => {
-  return bits.reduce((acc, bit) => acc | bit, 0);
+const calculateBitfield = (bits: number[] | number) => {
+  if (typeof bits === 'number') return bits;
+  let bitfield = 0;
+  bitfield = bits.reduce((acc, bit) => acc | bit, bitfield);
+  return bitfield;
 };
 
 const hasBit = (bitfield: number, bit: number) => {
