@@ -101,7 +101,6 @@ class ShardingManager {
             this.gateway.emit('rawEvent', { t: 'READY', d: null });
           }
           break;
-          
         default:
           this.gateway.emit('rawEvent', data);
           break;
