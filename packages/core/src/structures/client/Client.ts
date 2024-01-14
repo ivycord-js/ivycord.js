@@ -5,7 +5,7 @@ import { Collection, IvyError, IvyEventEmitter } from '@ivycord-js/utils';
 import { GatewayDispatchEvents } from 'discord-api-types/v10';
 import { glob } from 'fast-glob';
 
-import BaseEvent from '../events/base/BaseEvent';
+import { BaseEvent } from '../events/base/BaseEvent';
 
 /**
  * Options for the client.
@@ -85,7 +85,7 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
       `${__dirname.replaceAll('\\', '/')}/../events/*.js`
     );
     for (const file of eventFiles) {
-      const Event = (await import(file)).default;
+      const Event: any = Object.values(await import(file))[0];
       const instance: BaseEvent = new Event(this);
       this.events.set(instance.name, instance.run);
     }

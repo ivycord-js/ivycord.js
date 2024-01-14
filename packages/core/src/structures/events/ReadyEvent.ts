@@ -1,5 +1,5 @@
 import { Client } from '../client/Client';
-import BaseEvent from './base/BaseEvent';
+import { BaseEvent } from './base/BaseEvent';
 
 /**
  * Represents the ready event emitted by the client.
@@ -22,4 +22,4 @@ class ReadyEvent extends BaseEvent {
   }
 }
 
-export default ReadyEvent;
+export { ReadyEvent };

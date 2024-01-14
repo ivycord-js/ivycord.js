@@ -34,4 +34,4 @@ abstract class BaseEvent {
   abstract run(...args: any[]): void;
 }
 
-export default BaseEvent;
+export { BaseEvent };
