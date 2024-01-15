@@ -327,32 +327,6 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
       this.send(GatewayOpcodes.Heartbeat, this.sequence);
     this.lastHeartbeat = Date.now();
   }
-
-  private gotGuild(id: string) {
-    this.unavailableGuilds = this.unavailableGuilds.filter(
-      (guild) => guild !== id
-    );
-    if (!this.unavailableGuilds.length) this.status = 'READY';
-    if (
-      hasBit(
-        typeof this.manager.gateway.intents === 'number'
-          ? this.manager.gateway.intents
-          : calculateBitfield(this.manager.gateway.intents),
-        GatewayIntents.GUILDS
-      )
-    ) {
-      if (this.readyTimeout) clearTimeout(this.readyTimeout);
-      this.readyTimeout = setTimeout(() => {
-        this.status = 'READY';
-        this.emit('rawEvent', {
-          t: 'GUILDS_UNAVAILABLE',
-          shardID: this.id,
-          d: this.unavailableGuilds
-        });
-      }, this.manager.gateway.waitGuildsTimeout);
-    } else this.status = 'READY';
-  }
-
   /**
    * Handles gateway OP codes.
    * @param data Data received from the gateway.
@@ -372,18 +346,6 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
             );
             this.emit('rawEvent', {
               t: 'SHARD_READY',
-              shardID: this.id,
-              d: data.d
-            });
-            break;
-          case 'GUILD_CREATE':
-            if (data.d.unavailable) {
-              this.unavailableGuilds.push(data.d.id);
-              break;
-            }
-            this.gotGuild(data.d.id);
-            this.emit('rawEvent', {
-              t: 'GUILD_CREATE',
               shardID: this.id,
               d: data.d
             });
