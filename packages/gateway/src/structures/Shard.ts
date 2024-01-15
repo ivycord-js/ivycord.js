@@ -48,7 +48,7 @@ interface ShardEvents {
 }
 
 /**
- * Represents a gateway shard.
+ * Represents a gateway shard. Note: Unavailable guilds are not handled by the gateway. See https://discord.com/developers/docs/topics/gateway-events#ready for more information.
  * @extends {IvyEventEmitter}
  */
 class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
