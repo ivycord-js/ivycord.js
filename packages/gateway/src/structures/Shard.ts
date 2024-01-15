@@ -3,13 +3,13 @@ import {
   IvyEventEmitter,
   calculateBitfield
 } from '@ivycord-js/utils';
-import { hasBit } from '@ivycord-js/utils/dist/functions/calculateBitfield';
+import { hasBit } from '@ivycord-js/utils';
 
 import {
   GatewayCloseCodes,
   GatewayOpcodes,
   GatewayVersion
-} from 'discord-api-types/gateway/v10';
+} from 'discord-api-types/v10';
 import { RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
@@ -31,8 +31,19 @@ type ConnectionStatus =
  * Represents raw event data.
  */
 interface RawShardEventData {
+  /**
+   * The name of the event.
+   */
   t: string;
+
+  /**
+   * The ID of the shard.
+   */
   shardID?: number;
+
+  /**
+   * The data received from the gateway.
+   */
   d: unknown;
 }
 
@@ -327,6 +338,40 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
       this.send(GatewayOpcodes.Heartbeat, this.sequence);
     this.lastHeartbeat = Date.now();
   }
+
+  /**
+   * Marks a guild as available.
+   * @param id
+   */
+  private gotGuild(id: string) {
+    this.unavailableGuilds = this.unavailableGuilds.filter(
+      (guild) => guild !== id
+    );
+    if (!this.unavailableGuilds.length) {
+      this.status = 'READY';
+    }
+    if (
+      hasBit(
+        typeof this.manager.gateway.intents === 'number'
+          ? this.manager.gateway.intents
+          : calculateBitfield(this.manager.gateway.intents),
+        GatewayIntents.GUILDS
+      )
+    ) {
+      if (this.readyTimeout) clearTimeout(this.readyTimeout);
+      this.readyTimeout = setTimeout(() => {
+        this.status = 'READY';
+        this.emit('rawEvent', {
+          t: 'GUILDS_UNAVAILABLE',
+          shardID: this.id,
+          d: this.unavailableGuilds
+        });
+      }, this.manager.gateway.waitGuildsTimeout);
+    } else {
+      this.status = 'READY';
+    }
+  }
+
   /**
    * Handles gateway OP codes.
    * @param data Data received from the gateway.

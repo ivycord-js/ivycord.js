@@ -38,6 +38,9 @@ enum GatewayIntents {
  * The data received from the gateway.
  */
 interface GatewayData extends APIGatewayBotInfo {
+  /**
+   * The time at which the data expires.
+   */
   expiresAt: number;
 }
 
@@ -86,9 +89,9 @@ interface GatewayOptions {
   shardsStartFrom?: number;
 
   /**
-   * The timeout for waiting guilds to become available.
+   * How much time to wait for guilds to become available.
    */
-  waitGuildsTimeout?: number;
+  waitForGuildsTimeout?: number;
 
   /**
    * The presence data to send to the gateway.
@@ -142,7 +145,7 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
   public shardsStartFrom: number;
 
   /**
-   * The timeout for waiting guilds to become available.
+   * How much time to wait for guilds to become available.
    */
   public waitGuildsTimeout: number;
 
@@ -187,14 +190,15 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
     this.presence = options?.presence ?? null;
     this.intents = options?.intents ?? 0;
     this.shardsStartFrom = options?.shardsStartFrom ?? 0;
-    this.waitGuildsTimeout = options?.waitGuildsTimeout ?? 10000;
+    this.waitGuildsTimeout = options?.waitForGuildsTimeout ?? 10000;
+
     if (this.shardCount === 'auto' && this.shardsStartFrom !== 0)
       throw new IvyError('SHARD_COUNT_SHARDS_START_FROM_MISMATCH');
   }
 
   /**
    * Fetches data from the gateway.
-   * @returns The fetched gateway data.
+   * @returns The data fetched from the gateway.
    */
   async fetchGatewayData() {
     if (this._gatewayData && this._gatewayData.expiresAt > Date.now())

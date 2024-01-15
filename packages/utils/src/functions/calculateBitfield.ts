@@ -7,14 +7,4 @@ const calculateBitfield = (bits: number[]) => {
   return bits.reduce((a, b) => a | b, 0);
 };
 
-/**
- * Checks if a bitfield has a specific bit.
- * @param bitfield The bitfield to check.
- * @param bit The bit to check.
- * @returns True if the bitfield has the bit, otherwise false.
- */
-const hasBit = (bitfield: number, bit: number) => {
-  return (bitfield & bit) === bit;
-};
-
-export { calculateBitfield, hasBit };
+export { calculateBitfield };

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@ivycord-js/ivycord.js",
+  "name": "ivycord.js",
   "version": "0.0.0",
   "description": "A powerful Discord API wrapper JavaScript library.",
   "private": true,

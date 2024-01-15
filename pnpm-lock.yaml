@@ -69,9 +69,15 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.17.0
         version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
+      discord-api-types:
+        specifier: ^0.37.67
+        version: 0.37.67
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
+      eslint-plugin-eslint-comments:
+        specifier: ^3.2.0
+        version: 3.2.0(eslint@8.56.0)
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.0.0(@typescript-eslint/eslint-plugin@6.18.1)(eslint@8.56.0)
@@ -90,9 +96,6 @@ importers:
       '@ivycord-js/utils':
         specifier: workspace:^
         version: link:../utils
-      discord-api-types:
-        specifier: ^0.37.67
-        version: 0.37.67
       ws:
         specifier: ^8.16.0
         version: 8.16.0
@@ -115,9 +118,15 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.17.0
         version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
+      discord-api-types:
+        specifier: ^0.37.67
+        version: 0.37.67
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
+      eslint-plugin-eslint-comments:
+        specifier: ^3.2.0
+        version: 3.2.0(eslint@8.56.0)
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.0.0(@typescript-eslint/eslint-plugin@6.18.1)(eslint@8.56.0)
@@ -136,9 +145,6 @@ importers:
       axios:
         specifier: ^1.6.5
         version: 1.6.5
-      discord-api-types:
-        specifier: ^0.37.67
-        version: 0.37.67
     devDependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
@@ -152,9 +158,15 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.17.0
         version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
+      discord-api-types:
+        specifier: ^0.37.67
+        version: 0.37.67
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
+      eslint-plugin-eslint-comments:
+        specifier: ^3.2.0
+        version: 3.2.0(eslint@8.56.0)
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.0.0(@typescript-eslint/eslint-plugin@6.18.1)(eslint@8.56.0)
@@ -182,6 +194,9 @@ importers:
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
+      eslint-plugin-eslint-comments:
+        specifier: ^3.2.0
+        version: 3.2.0(eslint@8.56.0)
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.0.0(@typescript-eslint/eslint-plugin@6.18.1)(eslint@8.56.0)
@@ -786,7 +801,7 @@ packages:
 
   /discord-api-types@0.37.67:
     resolution: {integrity: sha512-4HEzUEmwGPXWJdVhGZ/K+9eWs8kurdn5r/I8qD3/0hb14I0MZvx8K/JOyLhKLgcR4/8/jcr6Xej820BNgNXN7A==}
-    dev: false
+    dev: true
 
   /doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}

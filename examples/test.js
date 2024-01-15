@@ -4,13 +4,11 @@
 
 */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { Client } = require('../packages/core/dist/index');
 const { Rest } = require('../packages/rest/dist/index');
 const { Gateway, GatewayIntents } = require('../packages/gateway/dist/index');
 
-const TOKEN =
-  'MTE1MzA1MDg2NjkzMzMwOTUwMA.GBsLfu.OSIzABkzZHEsO02wWuYcaQZCIMJOtwoVEPdYT8';
+const TOKEN = 'TOKEN_HERE';
 
 const rest = new Rest(TOKEN);
 const gateway = new Gateway({
@@ -25,5 +23,4 @@ client.on('ready', () => {
   console.log('ready');
 });
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 client.gateway.connect();
