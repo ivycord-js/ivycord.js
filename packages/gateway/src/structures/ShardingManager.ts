@@ -91,6 +91,11 @@ class ShardingManager {
     shard.on('rawEvent', (data: RawShardEventData) => {
       switch (data.t) {
         case 'SHARD_READY':
+          this.gateway.emit('rawEvent', {
+            t: 'SHARD_READY',
+            shardID: data.shardID,
+            d: data.d
+          });
           if (this.allShardsReady()) {
             this.gateway.emit('rawEvent', {
               t: 'READY',
@@ -98,12 +103,7 @@ class ShardingManager {
             });
           }
           break;
-        case 'SHARD_ALL_READY':
-          this.gateway.emit('rawEvent', {
-            t: 'ALL_READY',
-            d: data.d
-          });
-          break;
+
         default:
           this.gateway.emit('rawEvent', data);
           break;
