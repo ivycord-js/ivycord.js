@@ -1,8 +1,7 @@
 import {
   IvyError,
   IvyEventEmitter,
-  calculateBitfield,
-  hasBit
+  calculateBitfield
 } from '@ivycord-js/utils';
 
 import {
@@ -13,7 +12,6 @@ import {
 import { RawData, WebSocket } from 'ws';
 import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
-import { GatewayIntents } from './Gateway';
 import { ShardingManager } from './ShardingManager';
 
 /**
