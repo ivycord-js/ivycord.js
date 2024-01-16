@@ -117,7 +117,7 @@ class ShardingManager {
    * @returns True if all shards are connected, otherwise false.
    */
   allShardsReady() {
-    return this.shards.every((shard) => shard.status === 'READY');
+    return this.shards.every((shard) => shard.status === 'CONNECTED');
   }
 }
 

@@ -57,12 +57,14 @@
   "dependencies": {
     "@ivycord-js/rest": "workspace:^",
     "@ivycord-js/utils": "workspace:^",
+    "pako": "^2.1.0",
     "ws": "^8.16.0",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/node": "^20.10.6",
+    "@types/pako": "1.0.7",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",

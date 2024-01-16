@@ -1,4 +1,5 @@
 import { Gateway } from '@ivycord-js/gateway';
+import { RawShardEventData } from '@ivycord-js/gateway';
 import { Rest } from '@ivycord-js/rest';
 import { Collection, IvyError, IvyEventEmitter } from '@ivycord-js/utils';
 
@@ -67,11 +68,11 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
     if (this.gateway) {
       this.loadEvents()
         .then(() => {
-          this.gateway?.on('rawEvent', (data) => {
+          this.gateway?.on('rawEvent', (data: RawShardEventData) => {
             const eventFn = this.events.get(
               data.t as `${GatewayDispatchEvents}`
             );
-            if (eventFn) eventFn();
+            if (eventFn) eventFn(data.d, data.shardID);
           });
         })
         .catch(() => {
