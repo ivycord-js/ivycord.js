@@ -12,5 +12,5 @@ export {
   GatewayEvents,
   GatewayIntents,
   ShardEvents,
-  RawShardEventData,
+  RawShardEventData
 };
