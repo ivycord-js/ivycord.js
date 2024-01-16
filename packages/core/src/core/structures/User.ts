@@ -40,7 +40,6 @@ class User extends BaseStructure {
   public avatar_decoration?: string;
   constructor(client: Client, data: UserData) {
     super(client, data.id);
-    this.id = data.id;
     this.username = data.username;
     this.discriminator = data.discriminator;
     this.global_name = data.global_name;
@@ -86,9 +85,24 @@ class User extends BaseStructure {
       : null;
   }
 
-  public avatarDecorationURL({ size = 128 }: { size?: number } = {}) {
-    return this.accent_color
-      ? `https://cdn.discordapp.com/avatar-decorations/${this.id}/${this.avatar_decoration}.png?size=${size}`
-      : null;
+  override toJSON() {
+    return super.toJSON([
+      'username',
+      'discriminator',
+      'global_name',
+      'avatar',
+      'bot',
+      'system',
+      'mfa_enabled',
+      'banner',
+      'accent_color',
+      'locale',
+      'verified',
+      'email',
+      'flags',
+      'premium_type',
+      'public_flags',
+      'avatar_decoration'
+    ]);
   }
 }
