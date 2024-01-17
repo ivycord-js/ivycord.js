@@ -18,7 +18,7 @@ class ReadyEvent extends BaseEvent {
    * Runs the event.
    */
   override run(): void {
-    this.client.emit('ready');
+    this.client.emit('ready', this.client);
   }
 }
 

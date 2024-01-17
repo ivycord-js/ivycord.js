@@ -2,21 +2,33 @@ import { merge } from 'lodash';
 
 import { Client } from '../client/Client';
 
-export default class BaseStructure {
+class BaseStructure {
   public client: Client;
   public id: string;
-  public createdAt: number;
 
   constructor(client: Client, id: string) {
     this.client = client;
     this.id = id;
-    this.createdAt = Math.floor(Number(this.id) / 4194304) + 1420070400000;
   }
 
-  toJSON(additionalProps?: string[]) {
+  public get createdAtTimestamp() {
+    return Math.floor(Number(BigInt(this.id) / 4194304n)) + 1420070400000;
+  }
+
+  public get createdAtUnix() {
+    return Math.floor(this.createdAtTimestamp / 1000);
+  }
+
+  public get createdAt() {
+    return new Date(this.createdAtTimestamp);
+  }
+
+  public toJSON(additionalProps?: string[]) {
     const baseProps = {
       client: this.client,
       id: this.id,
+      createdAtTimestamp: this.createdAtTimestamp,
+      createdAtUnix: this.createdAtUnix,
       createdAt: this.createdAt
     };
 
@@ -28,3 +40,4 @@ export default class BaseStructure {
     return baseProps;
   }
 }
+export { BaseStructure };

@@ -8,7 +8,7 @@ const { Client } = require('../packages/core/dist/index');
 const { Rest } = require('../packages/rest/dist/index');
 const { Gateway, GatewayIntents } = require('../packages/gateway/dist/index');
 
-const TOKEN = 'TOKEN_HERE';
+const TOKEN = 'YOUR_TOKEN';
 
 const rest = new Rest(TOKEN);
 const gateway = new Gateway({
@@ -19,8 +19,9 @@ const gateway = new Gateway({
 
 const client = new Client({ rest, gateway });
 
-client.on('ready', () => {
-  console.log('ready');
+client.on('ready', (bot) => {
+  console.log('READY');
+  console.log(bot.user);
 });
 
 client.gateway.connect();

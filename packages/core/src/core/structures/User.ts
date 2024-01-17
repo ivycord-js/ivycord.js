@@ -1,5 +1,5 @@
 import { Client } from '../client/Client';
-import BaseStructure from './BaseStructure';
+import { BaseStructure } from './BaseStructure';
 
 interface UserData {
   id: string;
@@ -71,9 +71,7 @@ class User extends BaseStructure {
   }: { format?: 'webp' | 'png' | 'jpg'; size?: number } = {}) {
     return this.avatar
       ? `https://cdn.discordapp.com/avatars/${this.id}/${this.avatar}.${format}?size=${size}`
-      : `https://cdn.discordapp.com/embed/avatars/${
-          Number(this.discriminator) % 5
-        }.png`;
+      : `https://cdn.discordapp.com/embed/avatars/${BigInt(this.id) % 6n}.png`;
   }
 
   public bannerURL({
@@ -106,3 +104,5 @@ class User extends BaseStructure {
     ]);
   }
 }
+
+export { User, UserData };

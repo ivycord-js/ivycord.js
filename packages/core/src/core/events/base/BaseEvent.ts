@@ -1,6 +1,4 @@
-import { GatewayDispatchEvents } from 'discord-api-types/v10';
-
-import { Client } from '../../client/Client';
+import { Client, GatewayEventsType } from '../../client/Client';
 
 /**
  * Represents a base event emitted by the client.
@@ -9,7 +7,7 @@ abstract class BaseEvent {
   /**
    * The name of the event.
    */
-  public name: `${GatewayDispatchEvents}`;
+  public name: `${GatewayEventsType}`;
 
   /**
    * The client that emits the event.
@@ -20,7 +18,7 @@ abstract class BaseEvent {
    * Creates a new instance of the base event.
    * @param name The name of the event.
    */
-  constructor(name: `${GatewayDispatchEvents}`, client: Client) {
+  constructor(name: `${GatewayEventsType}`, client: Client) {
     this.name = name;
     this.client = client;
 

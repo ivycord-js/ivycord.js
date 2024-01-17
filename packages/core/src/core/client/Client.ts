@@ -7,6 +7,17 @@ import { GatewayDispatchEvents } from 'discord-api-types/v10';
 import { glob } from 'fast-glob';
 
 import { BaseEvent } from '../events/base/BaseEvent';
+import { User } from '../structures/User';
+
+enum GatewayEvents {
+  shardReady = 'SHARD_READY',
+  shardDisconnect = 'SHARD_DISCONNECT',
+  shardError = 'SHARD_ERROR',
+  shardClose = 'SHARD_CLOSE',
+  shardWarn = 'SHARD_WARN'
+}
+
+type GatewayEventsType = GatewayDispatchEvents | GatewayEvents;
 
 /**
  * Options for the client.
@@ -30,7 +41,12 @@ interface ClientEvents {
   /**
    * Emitted when the client is ready.
    */
-  ready: () => void;
+  ready: (client: Client) => void;
+
+  /**
+   * Emitted when a shard is ready.
+   */
+  shardReady: (shardID: number) => void;
 }
 
 /**
@@ -51,10 +67,10 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   /**
    * The events emitted by the client.
    */
-  public events: Collection<
-    `${GatewayDispatchEvents}`,
-    (...args: any[]) => void
-  > = new Collection();
+  public events: Collection<`${GatewayEventsType}`, (...args: any[]) => void> =
+    new Collection();
+
+  public user: User | undefined;
 
   /**
    * Creates a new instance of the client.
@@ -69,9 +85,7 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
       this.loadEvents()
         .then(() => {
           this.gateway?.on('rawEvent', (data: RawShardEventData) => {
-            const eventFn = this.events.get(
-              data.t as `${GatewayDispatchEvents}`
-            );
+            const eventFn = this.events.get(data.t as `${GatewayEventsType}`);
             if (eventFn) eventFn(data.d, data.shardID);
           });
         })
@@ -93,4 +107,4 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   }
 }
 
-export { Client, ClientEvents };
+export { Client, ClientEvents, GatewayEventsType };
