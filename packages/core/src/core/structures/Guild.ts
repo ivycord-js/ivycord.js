@@ -151,3 +151,4 @@ class Guild extends BaseStructure {
     ]);
   }
 }
+export { Guild };

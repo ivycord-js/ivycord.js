@@ -11,3 +11,4 @@ class GuildCreateEvent extends BaseEvent {
     // dodaj cache pa radi ovo
   }
 }
+export { GuildCreateEvent };
