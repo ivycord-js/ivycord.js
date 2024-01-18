@@ -1,61 +1,43 @@
+import { APIUser } from 'discord-api-types/v10';
+
 import { Client } from '../client/Client';
 import { BaseStructure } from './BaseStructure';
-
-interface UserData {
-  id: string;
-  username: string;
-  discriminator: string;
-  global_name?: string;
-  avatar: string;
-  bot?: boolean;
-  system?: boolean;
-  mfa_enabled?: boolean;
-  banner?: string;
-  accent_color?: number;
-  locale?: string;
-  verified?: boolean;
-  email?: string;
-  flags?: number;
-  premium_type?: number;
-  public_flags?: number;
-  avatar_decoration?: string;
-}
 
 class User extends BaseStructure {
   public username: string;
   public discriminator: string;
-  public global_name?: string;
+  public globalName?: string;
   public avatar: string;
   public bot?: boolean;
   public system?: boolean;
-  public mfa_enabled?: boolean;
+  public mfaEnabled?: boolean;
   public banner?: string;
-  public accent_color?: number;
+  public accentColor?: number;
   public locale?: string;
   public verified?: boolean;
   public email?: string;
   public flags?: number;
-  public premium_type?: number;
-  public public_flags?: number;
-  public avatar_decoration?: string;
-  constructor(client: Client, data: UserData) {
+  public premiumType?: number;
+  public publicFlags?: number;
+  public avatarDecoration?: string;
+  constructor(client: Client, data: APIUser) {
     super(client, data.id);
     this.username = data.username;
     this.discriminator = data.discriminator;
-    this.global_name = data.global_name;
-    this.avatar = data.avatar;
+    this.globalName = data.global_name ?? undefined;
+    this.avatar = data.avatar ?? '';
     this.bot = data.bot ?? false;
     this.system = data.system ?? false;
-    this.mfa_enabled = data.mfa_enabled ?? false;
+    this.mfaEnabled = data.mfa_enabled ?? false;
     this.banner = data.banner ?? undefined;
-    this.accent_color = data.accent_color ?? undefined;
+    this.accentColor = data.accent_color ?? undefined;
     this.locale = data.locale ?? '';
     this.verified = data.verified ?? false;
     this.email = data.email ?? '';
     this.flags = data.flags ?? 0;
-    this.premium_type = data.premium_type ?? 0;
-    this.public_flags = data.public_flags ?? 0;
-    this.avatar_decoration = data.avatar_decoration ?? undefined;
+    this.premiumType = data.premium_type ?? 0;
+    this.publicFlags = data.public_flags ?? 0;
+    this.avatarDecoration = data.avatar_decoration ?? undefined;
   }
   get tag() {
     return `${this.username}#${this.discriminator}`;
@@ -105,4 +87,4 @@ class User extends BaseStructure {
   }
 }
 
-export { User, UserData };
+export { User };

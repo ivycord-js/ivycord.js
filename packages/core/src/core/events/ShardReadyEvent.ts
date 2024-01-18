@@ -1,7 +1,7 @@
 import { GatewayReadyDispatchData } from 'discord-api-types/v10';
 
 import { Client } from '../client/Client';
-import { User, UserData } from '../structures/User';
+import { User } from '../structures/User';
 import { BaseEvent } from './base/BaseEvent';
 
 /**
@@ -22,7 +22,7 @@ class ShardReadyEvent extends BaseEvent {
    */
   override run(data: GatewayReadyDispatchData, shardID: number): void {
     if (!this.client.user && data.user) {
-      this.client.user = new User(this.client, data.user as UserData);
+      this.client.user = new User(this.client, data.user);
       this.client.emit('shardReady', shardID);
     } else {
       this.client.emit('shardReady', shardID);
