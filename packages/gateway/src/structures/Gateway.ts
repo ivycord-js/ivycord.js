@@ -89,11 +89,6 @@ interface GatewayOptions {
   shardsStartFrom?: number;
 
   /**
-   * How much time to wait for guilds to become available.
-   */
-  waitForGuildsTimeout?: number;
-
-  /**
    * The presence data to send to the gateway.
    */
   presence?: GatewayUpdatePresence;
@@ -145,11 +140,6 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
   public shardsStartFrom: number;
 
   /**
-   * How much time to wait for guilds to become available.
-   */
-  public waitGuildsTimeout: number;
-
-  /**
    * The presence data to send to the gateway.
    */
   public presence: GatewayUpdatePresence | null;
@@ -190,7 +180,6 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
     this.presence = options?.presence ?? null;
     this.intents = options?.intents ?? 0;
     this.shardsStartFrom = options?.shardsStartFrom ?? 0;
-    this.waitGuildsTimeout = options?.waitForGuildsTimeout ?? 10000;
 
     if (this.shardCount === 'auto' && this.shardsStartFrom !== 0)
       throw new IvyError('SHARD_COUNT_SHARDS_START_FROM_MISMATCH');
@@ -219,6 +208,11 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
     await this.shardingManager.spawnShards();
   }
 
+  /**
+   * Gets a shard by its ID.
+   * @param id The ID of the shard to get.
+   * @returns The shard.
+   */
   getShard(id: number) {
     return this.shardingManager.shards.get(id);
   }

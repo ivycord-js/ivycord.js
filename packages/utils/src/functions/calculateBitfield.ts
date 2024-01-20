@@ -4,7 +4,7 @@
  * @returns The calculated bitfield as a number.
  */
 const calculateBitfield = (bits: number[]) => {
-  return bits.reduce((a, b) => a | b, 0);
+  return bits.reduce((acc, bit) => acc | bit, 0);
 };
 
 export { calculateBitfield };

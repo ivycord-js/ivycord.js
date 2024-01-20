@@ -95,6 +95,9 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
     }
   }
 
+  /**
+   * Loads all client events.
+   */
   private async loadEvents() {
     const eventFiles = await glob(
       `${__dirname.replaceAll('\\', '/')}/../events/*.js`

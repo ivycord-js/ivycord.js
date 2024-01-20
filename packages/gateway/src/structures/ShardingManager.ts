@@ -103,7 +103,6 @@ class ShardingManager {
             });
           }
           break;
-
         default:
           this.gateway.emit('rawEvent', data);
           break;

@@ -5,22 +5,23 @@ import { Client, GatewayEventsType } from '../../client/Client';
  */
 abstract class BaseEvent {
   /**
-   * The name of the event.
-   */
-  public name: `${GatewayEventsType}`;
-
-  /**
    * The client that emits the event.
    */
   public client: Client;
 
   /**
+   * The name of the event.
+   */
+  public name: `${GatewayEventsType}`;
+
+  /**
    * Creates a new instance of the base event.
+   * @param client The client that emits the event.
    * @param name The name of the event.
    */
-  constructor(name: `${GatewayEventsType}`, client: Client) {
-    this.name = name;
+  constructor(client: Client, name: `${GatewayEventsType}`) {
     this.client = client;
+    this.name = name;
 
     this.run = this.run.bind(this);
   }

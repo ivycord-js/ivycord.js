@@ -8,16 +8,16 @@ import { BaseEvent } from './base/BaseEvent';
 class ReadyEvent extends BaseEvent {
   /**
    * Creates a new instance of the ready event.
-   * @param name The name of the event.
+   * @param client The client that emits the event.
    */
   constructor(client: Client) {
-    super('READY', client);
+    super(client, 'READY');
   }
 
   /**
    * Runs the event.
    */
-  override run(): void {
+  override run() {
     this.client.emit('ready', this.client);
   }
 }

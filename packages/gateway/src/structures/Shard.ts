@@ -193,7 +193,6 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
       )
         this.inflate?.push(buffer, FlushValues.Z_SYNC_FLUSH);
       else this.inflate?.push(buffer, false);
-
       data = Buffer.from(this.inflate?.result as string);
     }
     data = JSON.parse(data.toString());
@@ -238,18 +237,21 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
     });
   }
 
+  /**
+   * Resets the shard class.
+   */
   private reset() {
+    this.ws = null;
+    this.latency = 0;
+    this.status = 'DISCONNECTED';
+    this.inflate = null;
     this.sequence = null;
-    this.sessionID = null;
-    this.resumeGatewayURL = null;
     this.lastHeartbeat = 0;
     this.lastHeartbeatAck = 0;
     this.heartbeatInterval = null;
     this.reconnectInterval = null;
-    this.inflate = null;
-    this.ws = null;
-    this.latency = 0;
-    this.status = 'DISCONNECTED';
+    this.resumeGatewayURL = null;
+    this.sessionID = null;
   }
 
   /**
@@ -270,7 +272,6 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
    * Reconnects to the gateway.
    */
   private reconnect() {
-    console.log('reconnecting');
     if (this.status !== 'DISCONNECTED') return;
     this.status = 'RECONNECTING';
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
