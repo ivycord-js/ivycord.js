@@ -42,6 +42,12 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
+  packages/cache:
+    dependencies:
+      '@ivycord-js/utils':
+        specifier: workspace:^
+        version: link:../utils
+
   packages/core:
     dependencies:
       '@ivycord-js/gateway':
