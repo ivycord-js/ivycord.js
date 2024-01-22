@@ -8,7 +8,7 @@ class GuildCreateEvent extends BaseEvent {
     super('GUILD_CREATE', client);
   }
   override run(data: GatewayGuildCreateDispatchData) {
-    // dodaj cache pa radi ovo
+    //
   }
 }
 export { GuildCreateEvent };

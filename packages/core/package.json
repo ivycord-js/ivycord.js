@@ -55,6 +55,7 @@
   },
   "packageManager": "pnpm@8.14.0",
   "dependencies": {
+    "@ivycord-js/cache": "workspace:^",
     "@ivycord-js/gateway": "workspace:^",
     "@ivycord-js/rest": "workspace:^",
     "@ivycord-js/utils": "workspace:^",

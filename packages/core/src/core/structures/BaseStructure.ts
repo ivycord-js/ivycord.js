@@ -1,5 +1,3 @@
-import { merge } from 'lodash';
-
 import { Client } from '../client/Client';
 
 /**
@@ -52,15 +50,15 @@ class BaseStructure {
    * @param additionalProps Additional properties to add to the JSON object.
    * @returns The JSON representation of the structure.
    */
-  toJSON(additionalProps?: string[]) {
+  toJSON(additionalProps?: (keyof this)[]) {
     const baseProps = {
-      id: this.id,
-      client: this.client,
-      createdAtTimestamp: this.createdAtTimestamp,
-      createdAtUnix: this.createdAtUnix,
-      createdAt: this.createdAt
+      id: this.id
     };
-    if (additionalProps) return merge(baseProps, additionalProps);
+    if (additionalProps)
+      return Object.assign(
+        baseProps,
+        ...additionalProps.map((prop) => ({ [prop]: this[prop] }))
+      );
     else return baseProps;
   }
 }

@@ -32,6 +32,47 @@ interface ClientOptions {
    * The gateway used for communicating with the Discord gateway.
    */
   gateway?: Gateway;
+
+  /**
+   * The cache used for caching Discord data.
+   * @default 'memory'
+   */
+  cacheOptions?: CacheOptions;
+}
+
+/**
+ * Options for configuring the cache.
+ */
+interface CacheOptions {
+  /**
+   * The location where the cache is stored.
+   * Possible values are 'memory', 'redis', or 'mongodb'.
+   */
+  location: 'memory' | 'redis' | 'mongodb';
+
+  /**
+   * The connection string for connecting to the cache storage.
+   * This property is optional and only required for certain cache locations.
+   */
+  connectionString?: string;
+
+  /**
+   * The time to live for cached values in seconds.
+   * Default value is 0, which means no expiration.
+   */
+  ttl?: number;
+
+  /**
+   * The maximum number of entries the cache can hold.
+   * Default value is Infinity, which means unlimited entries.
+   */
+  max?: number;
+
+  /**
+   * The interval in milliseconds for sweeping the cache.
+   * Default value is 0, which means no sweeping.
+   */
+  sweep?: number;
 }
 
 /**
@@ -70,7 +111,15 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   public events: Collection<`${GatewayEventsType}`, (...args: any[]) => void> =
     new Collection();
 
+  /**
+   * The user associated with the client.
+   */
   public user: User | undefined;
+
+  /**
+   * Options for the cache.
+   */
+  public cacheOptions?: CacheOptions;
 
   /**
    * Creates a new instance of the client.
@@ -80,6 +129,7 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
     super();
     this.rest = options.rest;
     this.gateway = options.gateway ?? null;
+    this.cacheOptions = options.cacheOptions;
 
     if (this.gateway) {
       this.loadEvents()

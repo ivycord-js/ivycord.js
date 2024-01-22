@@ -19,7 +19,7 @@ abstract class BaseEvent {
    * @param client The client that emits the event.
    * @param name The name of the event.
    */
-  constructor(client: Client, name: `${GatewayEventsType}`) {
+  constructor(name: `${GatewayEventsType}`, client: Client) {
     this.client = client;
     this.name = name;
 

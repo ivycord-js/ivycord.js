@@ -69,20 +69,20 @@ class User extends BaseStructure {
     return super.toJSON([
       'username',
       'discriminator',
-      'global_name',
+      'globalName',
       'avatar',
       'bot',
       'system',
-      'mfa_enabled',
+      'mfaEnabled',
       'banner',
-      'accent_color',
+      'accentColor',
       'locale',
       'verified',
       'email',
       'flags',
-      'premium_type',
-      'public_flags',
-      'avatar_decoration'
+      'premiumType',
+      'publicFlags',
+      'avatarDecoration'
     ]);
   }
 }
