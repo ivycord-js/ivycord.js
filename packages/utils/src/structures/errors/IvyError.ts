@@ -10,9 +10,7 @@ const messages = {
     'Cannot use "auto" as the shard count when shardsStartFrom option is not 0.',
 
   // REST
-  FETCH_ERROR: 'An error occurred while fetching:\n\n{message}',
-
-  NOT_IMPLEMENTED: 'This method is not implemented yet.'
+  FETCH_ERROR: 'An error occurred while fetching:\n\n{message}'
 };
 
 /**

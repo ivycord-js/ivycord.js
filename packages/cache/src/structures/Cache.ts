@@ -1,24 +1,36 @@
+/**
+ * Options for the cache.
+ */
 interface CacheOptions {
+  /**
+   * After how many seconds the cached value should expire.
+   */
   ttl?: number;
-  max?: number;
-  reset?: boolean;
-  sweep?: number;
+
+  /**
+   * The maximum number of entries that the cache can hold.
+   */
+  maxEntries?: number;
+
+  /**
+   * The interval in seconds at which the cache should be automatically swept for expired entries.
+   */
+  sweepInterval?: number;
 }
 
 /**
  * Represents a cache that stores key-value pairs.
- * @template T - The type of values stored in the cache.
  */
 abstract class Cache<T> {
   /**
-   * The time-to-live (TTL) for cached values in seconds.
+   * After how many seconds the cached value should expire.
    */
   public ttl: number;
 
   /**
    * The maximum number of entries that the cache can hold.
    */
-  public max: number;
+  public maxEntries: number;
 
   /**
    * The interval in seconds at which the cache should be automatically swept for expired entries.
@@ -26,40 +38,46 @@ abstract class Cache<T> {
   public sweepInterval: number;
 
   /**
-   * Creates a new instance of the Cache class.
-   * @param options - The options for configuring the cache.
+   * Creates a new instance of the cache.
+   * @param options Options for the cache.
    */
   constructor(options: CacheOptions) {
     this.ttl = options.ttl ?? 86400;
-    this.max = options.max ?? Infinity;
-    this.sweepInterval = options.sweep ?? 600;
+    this.maxEntries = options.maxEntries ?? Infinity;
+    this.sweepInterval = options.sweepInterval ?? 600;
   }
 
   /**
    * Retrieves the value associated with the specified key from the cache.
-   * @returns The value associated with the key, or undefined if the key does not exist in the cache.
+   * @param key The key to retrieve the value for.
+   * @returns The value associated with the key, or null if the key does not exist in the cache.
    */
-  abstract get(key: string): T | undefined;
+  abstract get(key: string): T | null;
 
   /**
    * Sets the value associated with the specified key in the cache.
-   * @returns The previous value associated with the key, or undefined if the key did not exist in the cache.
+   * @param key The key to set the value for.
+   * @param value The value to set.
+   * @returns The value that was set.
    */
   abstract set(key: string, value: T): T;
 
   /**
    * Deletes the value associated with the specified key from the cache.
-   * @returns The value associated with the key, or undefined if the key did not exist in the cache.
+   * @param key The key to delete the value for.
+   * @returns The value that was deleted, or null if the key does not exist in the cache.
    */
-  abstract delete(key: string): T | undefined;
+  abstract delete(key: string): T | null;
 
   /**
-   * Clears all key-value pairs from the cache.
+   * Wipes all key-value pairs from the cache.
+   * @returns The cache instance.
    */
-  abstract clear(): void;
+  abstract wipe(): this;
 
   /**
    * Checks if the cache contains a value associated with the specified key.
+   * @param key The key to check for.
    * @returns True if the cache contains the key, false otherwise.
    */
   abstract has(key: string): boolean;
