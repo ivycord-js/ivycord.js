@@ -1,5 +1,5 @@
 import { Gateway, GatewayEvents, GatewayIntents } from './structures/Gateway';
-import { Shard, ShardEvents } from './structures/Shard';
+import { RawShardEventData, Shard, ShardEvents } from './structures/Shard';
 import { ShardingManager } from './structures/ShardingManager';
 
 export {
@@ -11,5 +11,6 @@ export {
   // Non-structure
   GatewayEvents,
   GatewayIntents,
-  ShardEvents
+  ShardEvents,
+  RawShardEventData
 };

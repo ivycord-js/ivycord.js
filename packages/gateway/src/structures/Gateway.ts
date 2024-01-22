@@ -38,6 +38,9 @@ enum GatewayIntents {
  * The data received from the gateway.
  */
 interface GatewayData extends APIGatewayBotInfo {
+  /**
+   * The time at which the data expires.
+   */
   expiresAt: number;
 }
 
@@ -184,7 +187,7 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
 
   /**
    * Fetches data from the gateway.
-   * @returns The fetched gateway data.
+   * @returns The data fetched from the gateway.
    */
   async fetchGatewayData() {
     if (this._gatewayData && this._gatewayData.expiresAt > Date.now())
@@ -203,6 +206,15 @@ class Gateway extends IvyEventEmitter<keyof GatewayEvents, GatewayEvents> {
    */
   async connect() {
     await this.shardingManager.spawnShards();
+  }
+
+  /**
+   * Gets a shard by its ID.
+   * @param id The ID of the shard to get.
+   * @returns The shard.
+   */
+  getShard(id: number) {
+    return this.shardingManager.shards.get(id);
   }
 }
 

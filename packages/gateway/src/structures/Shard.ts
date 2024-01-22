@@ -9,8 +9,8 @@ import {
   GatewayOpcodes,
   GatewayVersion
 } from 'discord-api-types/gateway/v10';
+import { FlushValues, Inflate } from 'pako';
 import { RawData, WebSocket } from 'ws';
-import { Inflate, Z_SYNC_FLUSH } from 'zlib-sync';
 
 import { ShardingManager } from './ShardingManager';
 
@@ -68,11 +68,6 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
    * The current gateway connection status of the shard.
    */
   public status: ConnectionStatus = 'DISCONNECTED';
-
-  /**
-   * All guilds that are currently unavailable for this specific shard.
-   */
-  public unavailableGuilds: string[] = [];
 
   /**
    * The inflate stream for decompressing gateway data.
@@ -196,7 +191,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
         buffer.length >= 4 &&
         Buffer.compare(zlibSuffix, buffer.subarray(buffer.length - 4)) === 0
       )
-        this.inflate?.push(buffer, Z_SYNC_FLUSH);
+        this.inflate?.push(buffer, FlushValues.Z_SYNC_FLUSH);
       else this.inflate?.push(buffer, false);
       data = Buffer.from(this.inflate?.result as string);
     }
@@ -214,7 +209,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
     this.emit('rawEvent', {
       t: 'SHARD_CLOSE',
       shardID: this.id,
-      d: { code, reason }
+      d: { code, reason: reason.toString() }
     });
     switch (code) {
       case GatewayCloseCodes.AuthenticationFailed:
@@ -243,12 +238,29 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
   }
 
   /**
+   * Resets the shard class.
+   */
+  private reset() {
+    this.ws = null;
+    this.latency = 0;
+    this.status = 'DISCONNECTED';
+    this.inflate = null;
+    this.sequence = null;
+    this.lastHeartbeat = 0;
+    this.lastHeartbeatAck = 0;
+    this.heartbeatInterval = null;
+    this.reconnectInterval = null;
+    this.resumeGatewayURL = null;
+    this.sessionID = null;
+  }
+
+  /**
    * Disconnects from the gateway.
    */
   disconnect() {
     if (this.ws?.readyState !== WebSocket.OPEN) return;
     this.ws.close();
-    this.status = 'DISCONNECTED';
+    this.reset();
     this.emit('rawEvent', {
       t: 'SHARD_DISCONNECT',
       shardID: this.id,
@@ -269,7 +281,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
     this.reconnectInterval = setInterval(() => {
       if (!attempts) {
         if (this.reconnectInterval) clearInterval(this.reconnectInterval);
-        this.status = 'DISCONNECTED';
+        this.reset();
         return;
       }
       this.initWS();
@@ -334,9 +346,6 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
             this.status = 'CONNECTED';
             this.resumeGatewayURL = data.d.resume_gateway_url;
             this.sessionID = data.d.session_id;
-            this.unavailableGuilds = data.d.guilds.map(
-              (guild: { id: string; unavailable: boolean }) => guild.id
-            );
             this.emit('rawEvent', {
               t: 'SHARD_READY',
               shardID: this.id,

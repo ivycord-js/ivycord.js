@@ -4,7 +4,6 @@
 
 */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { Client } = require('../packages/core/dist/index');
 const { Rest } = require('../packages/rest/dist/index');
 const { Gateway, GatewayIntents } = require('../packages/gateway/dist/index');
@@ -18,11 +17,17 @@ const gateway = new Gateway({
   intents: [GatewayIntents.GUILDS]
 });
 
-const client = new Client({ rest, gateway });
-
-client.gateway.on('rawEvent', (data) => {
-  console.log(data);
+const client = new Client({
+  rest,
+  gateway,
+  cacheOptions: {
+    location: 'memory'
+  }
 });
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
+client.on('ready', (bot) => {
+  console.log('READY');
+  console.log(bot.user.toJSON());
+});
+
 client.gateway.connect();

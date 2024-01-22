@@ -97,8 +97,10 @@ class ShardingManager {
             d: data.d
           });
           if (this.allShardsReady()) {
-            this.gateway.ready = true;
-            this.gateway.emit('rawEvent', { t: 'READY', d: null });
+            this.gateway.emit('rawEvent', {
+              t: 'READY',
+              d: data.d
+            });
           }
           break;
         default:
