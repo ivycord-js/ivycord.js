@@ -40,6 +40,13 @@ class Collection<KeyType, ValueType> extends Map<KeyType, ValueType> {
   }
 
   /**
+   * Returns the first key in the collection.
+   * @returns The first key in the collection.
+   */
+  firstKey() {
+    return [...this.keys()][0];
+  }
+  /**
    * Returns the last value in the collection.
    * @returns The last value in the collection.
    */

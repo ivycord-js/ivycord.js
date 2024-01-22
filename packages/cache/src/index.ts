@@ -1,3 +1,11 @@
-import { Cache } from './structures/Cache';
+import { Cache, CacheOptions } from './structures/Cache';
+import { MemoryCache } from './structures/MemoryCache';
 
-export { Cache };
+export {
+  // Classes
+  Cache,
+  MemoryCache,
+
+  // Options
+  CacheOptions
+};

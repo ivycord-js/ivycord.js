@@ -7,8 +7,10 @@
 const { Client } = require('../packages/core/dist/index');
 const { Rest } = require('../packages/rest/dist/index');
 const { Gateway, GatewayIntents } = require('../packages/gateway/dist/index');
+const { MemoryCache } = require('../packages/cache/dist');
 
-const TOKEN = 'YOUR_TOKEN';
+const TOKEN =
+  'MTE1MzA1MDg2NjkzMzMwOTUwMA.GSm-BR.hY9i_USw2WFtmkstI223244p-AA40c5Cr021ME';
 
 const rest = new Rest(TOKEN);
 const gateway = new Gateway({
@@ -17,11 +19,17 @@ const gateway = new Gateway({
   intents: [GatewayIntents.GUILDS]
 });
 
-const client = new Client({ rest, gateway });
+const client = new Client({
+  rest,
+  gateway,
+  cacheOptions: {
+    
+  }
+});
 
 client.on('ready', (bot) => {
   console.log('READY');
-  console.log(bot.user);
+  console.log(bot.user.toJSON());
 });
 
 client.gateway.connect();

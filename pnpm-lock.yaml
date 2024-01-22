@@ -50,6 +50,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@ivycord-js/cache':
+        specifier: workspace:^
+        version: link:../cache
       '@ivycord-js/gateway':
         specifier: workspace:^
         version: link:../gateway

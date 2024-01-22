@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@ivycord/cache",
+  "name": "@ivycord-js/cache",
   "version": "0.0.1",
   "description": "Caching system for IvyCord",
   "license": "MIT",
