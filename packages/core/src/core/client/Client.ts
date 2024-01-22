@@ -3,21 +3,10 @@ import { RawShardEventData } from '@ivycord-js/gateway';
 import { Rest } from '@ivycord-js/rest';
 import { Collection, IvyError, IvyEventEmitter } from '@ivycord-js/utils';
 
-import { GatewayDispatchEvents } from 'discord-api-types/v10';
 import { glob } from 'fast-glob';
 
 import { BaseEvent } from '../events/base/BaseEvent';
 import { User } from '../structures/User';
-
-enum GatewayEvents {
-  shardReady = 'SHARD_READY',
-  shardDisconnect = 'SHARD_DISCONNECT',
-  shardError = 'SHARD_ERROR',
-  shardClose = 'SHARD_CLOSE',
-  shardWarn = 'SHARD_WARN'
-}
-
-type GatewayEventsType = GatewayDispatchEvents | GatewayEvents;
 
 /**
  * Options for the client.
@@ -34,45 +23,40 @@ interface ClientOptions {
   gateway?: Gateway;
 
   /**
-   * The cache used for caching Discord data.
-   * @default 'memory'
+   * The options for the cache used for storing Discord data.
    */
-  cacheOptions?: CacheOptions;
+  cacheOptions?: ClientCacheOptions;
 }
 
 /**
  * Options for configuring the cache.
  */
-interface CacheOptions {
+interface ClientCacheOptions {
   /**
    * The location where the cache is stored.
-   * Possible values are 'memory', 'redis', or 'mongodb'.
    */
   location: 'memory' | 'redis' | 'mongodb';
 
   /**
    * The connection string for connecting to the cache storage.
-   * This property is optional and only required for certain cache locations.
+   * This property is optional and only required for certain cache locations (e.g. Redis).
    */
   connectionString?: string;
 
   /**
-   * The time to live for cached values in seconds.
-   * Default value is 0, which means no expiration.
+   * After how many seconds the cached value should expire.
    */
   ttl?: number;
 
   /**
-   * The maximum number of entries the cache can hold.
-   * Default value is Infinity, which means unlimited entries.
+   * The maximum number of entries that the cache can hold.
    */
   max?: number;
 
   /**
-   * The interval in milliseconds for sweeping the cache.
-   * Default value is 0, which means no sweeping.
+   * The interval in seconds at which the cache should be automatically swept for expired entries.
    */
-  sweep?: number;
+  sweepInterval?: number;
 }
 
 /**
@@ -108,18 +92,18 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   /**
    * The events emitted by the client.
    */
-  public events: Collection<`${GatewayEventsType}`, (...args: any[]) => void> =
+  public events: Collection<keyof ClientEvents, (...args: any[]) => void> =
     new Collection();
 
   /**
    * The user associated with the client.
    */
-  public user: User | undefined;
+  public user?: User;
 
   /**
    * Options for the cache.
    */
-  public cacheOptions?: CacheOptions;
+  public cacheOptions?: ClientCacheOptions;
 
   /**
    * Creates a new instance of the client.
@@ -135,7 +119,7 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
       this.loadEvents()
         .then(() => {
           this.gateway?.on('rawEvent', (data: RawShardEventData) => {
-            const eventFn = this.events.get(data.t as `${GatewayEventsType}`);
+            const eventFn = this.events.get(data.t as keyof ClientEvents);
             if (eventFn) eventFn(data.d, data.shardID);
           });
         })
@@ -160,4 +144,4 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   }
 }
 
-export { Client, ClientEvents, GatewayEventsType };
+export { Client, ClientEvents };

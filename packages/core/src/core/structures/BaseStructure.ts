@@ -26,6 +26,7 @@ class BaseStructure {
 
   /**
    * The timestamp of when the structure was created.
+   * @returns The timestamp of when the structure was created.
    */
   get createdAtTimestamp() {
     return Math.floor(Number(BigInt(this.id) / 4194304n)) + 1420070400000;
@@ -33,6 +34,7 @@ class BaseStructure {
 
   /**
    * The unix timestamp of when the structure was created.
+   * @returns The unix timestamp of when the structure was created.
    */
   get createdAtUnix() {
     return Math.floor(this.createdAtTimestamp / 1000);
@@ -40,6 +42,7 @@ class BaseStructure {
 
   /**
    * The date of when the structure was created.
+   * @returns The date of when the structure was created.
    */
   get createdAt() {
     return new Date(this.createdAtTimestamp);

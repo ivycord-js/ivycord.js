@@ -219,6 +219,11 @@ class Guild extends BaseStructure {
    */
   public safetyAlertsChannelId?: string;
 
+  /**
+   * Creates a new instance of the guild.
+   * @param client The client that uses this structure.
+   * @param data The data for the guild.
+   */
   constructor(client: Client, data: APIGuild) {
     super(client, data.id);
     this.name = data.name;
@@ -268,6 +273,9 @@ class Guild extends BaseStructure {
     this.safetyAlertsChannelId = data.safety_alerts_channel_id ?? undefined;
   }
 
+  /**
+   * The shard ID of the guild.
+   */
   get shardID() {
     return Number(
       (BigInt(this.id) >> 22n) %
@@ -275,6 +283,10 @@ class Guild extends BaseStructure {
     );
   }
 
+  /**
+   * Returns the JSON representation of the structure.
+   * @returns The JSON representation of the structure.
+   */
   override toJSON() {
     return super.toJSON([
       'name',
