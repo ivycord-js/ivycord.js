@@ -15,7 +15,7 @@ class MemoryCache<T> extends Cache<T> {
   /**
    * The interval ID for the cache sweeping process.
    */
-  private sweepInterval: NodeJS.Timeout | null;
+  private _sweepInterval: NodeJS.Timeout | null;
 
   /**
    * Creates a new instance of the MemoryCache class.
@@ -24,7 +24,7 @@ class MemoryCache<T> extends Cache<T> {
   constructor(options: CacheOptions) {
     super(options);
     this.data = new Collection();
-    this.sweepInterval = null;
+    this._sweepInterval = null;
 
     this.startSweeping();
   }
@@ -96,12 +96,13 @@ class MemoryCache<T> extends Cache<T> {
    * This process periodically removes expired entries from the cache.
    */
   private startSweeping() {
-    if (this.sweepInterval) {
-      clearInterval(this.sweepInterval);
+    if (this.sweepInterval <= 0) return;
+    if (this._sweepInterval) {
+      clearInterval(this._sweepInterval);
     }
-    this.sweepInterval = setInterval(() => {
+    this._sweepInterval = setInterval(() => {
       this.sweepCache();
-    }, this.sweep * 1000);
+    }, this.sweepInterval * 1000);
   }
 
   /**

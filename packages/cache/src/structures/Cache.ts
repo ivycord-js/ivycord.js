@@ -23,16 +23,16 @@ abstract class Cache<T> {
   /**
    * The interval in seconds at which the cache should be automatically swept for expired entries.
    */
-  public sweep: number;
+  public sweepInterval: number;
 
   /**
    * Creates a new instance of the Cache class.
    * @param options - The options for configuring the cache.
    */
   constructor(options: CacheOptions) {
-    this.ttl = options.ttl ?? 0;
+    this.ttl = options.ttl ?? 86400;
     this.max = options.max ?? Infinity;
-    this.sweep = options.sweep ?? 0;
+    this.sweepInterval = options.sweep ?? 600;
   }
 
   /**
