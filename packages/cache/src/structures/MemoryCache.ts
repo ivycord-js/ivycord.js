@@ -50,7 +50,7 @@ class MemoryCache<T> extends Cache<T> {
       const oldestKey = this.data.firstKey();
       this.data.delete(oldestKey);
     }
-    this.data.set(key, { value, expiresAt });
+    this.data.add(key, { value, expiresAt });
     return value;
   }
 
@@ -96,7 +96,7 @@ class MemoryCache<T> extends Cache<T> {
     this._sweepInterval = setInterval(
       () => this.sweepCache(),
       this.sweepInterval * 1000
-    );
+    ).unref();
   }
 
   /**

@@ -383,7 +383,7 @@ class Shard extends IvyEventEmitter<keyof ShardEvents, ShardEvents> {
           this.heartbeatInterval = setInterval(
             () => this.heartbeat(),
             data.d.heartbeat_interval
-          );
+          ).unref();
         }
         break;
       case GatewayOpcodes.HeartbeatAck:

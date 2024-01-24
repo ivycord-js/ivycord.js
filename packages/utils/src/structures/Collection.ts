@@ -46,12 +46,21 @@ class Collection<KeyType, ValueType> extends Map<KeyType, ValueType> {
   firstKey() {
     return [...this.keys()][0];
   }
+
   /**
    * Returns the last value in the collection.
    * @returns The last value in the collection.
    */
   last() {
     return [...this.values()][this.size - 1];
+  }
+
+  /**
+   * Returns the last key in the collection.
+   * @returns The last key in the collection.
+   */
+  lastKey() {
+    return [...this.keys()][this.size - 1];
   }
 
   /**
@@ -99,7 +108,7 @@ class Collection<KeyType, ValueType> extends Map<KeyType, ValueType> {
    * Returns an array containing all the keys in the collection.
    * @returns An array containing all the keys in the collection.
    */
-  keysArray() {
+  toKeysArray() {
     return [...this.keys()];
   }
 }

@@ -14,7 +14,7 @@ class ShardReadyEvent extends BaseEvent {
    * @param client The client that emits the event.
    */
   constructor(client: Client) {
-    super('shardReady', client);
+    super('SHARD_READY', client);
   }
 
   /**

@@ -3,9 +3,15 @@ import { RawShardEventData } from '@ivycord-js/gateway';
 import { Rest } from '@ivycord-js/rest';
 import { Collection, IvyError, IvyEventEmitter } from '@ivycord-js/utils';
 
+import { GatewayDispatchEvents } from 'discord-api-types/v10';
 import { glob } from 'fast-glob';
 
-import { BaseEvent } from '../events/base/BaseEvent';
+import {
+  BaseEvent,
+  ClientEvents,
+  GatewayRawEvents
+} from '../events/base/BaseEvent';
+import { GuildManager } from '../managers/GuildManager';
 import { User } from '../structures/User';
 
 /**
@@ -51,27 +57,12 @@ interface ClientCacheOptions {
   /**
    * The maximum number of entries that the cache can hold.
    */
-  max?: number;
+  maxEntries?: number;
 
   /**
    * The interval in seconds at which the cache should be automatically swept for expired entries.
    */
   sweepInterval?: number;
-}
-
-/**
- * All events emitted by the client.
- */
-interface ClientEvents {
-  /**
-   * Emitted when the client is ready.
-   */
-  ready: (client: Client) => void;
-
-  /**
-   * Emitted when a shard is ready.
-   */
-  shardReady: (shardID: number) => void;
 }
 
 /**
@@ -90,10 +81,9 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   public gateway: Gateway | null;
 
   /**
-   * The events emitted by the client.
+   * Options for the cache.
    */
-  public events: Collection<keyof ClientEvents, (...args: any[]) => void> =
-    new Collection();
+  public cacheOptions?: ClientCacheOptions;
 
   /**
    * The user associated with the client.
@@ -101,9 +91,22 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
   public user?: User;
 
   /**
-   * Options for the cache.
+   *  The guild manager.
    */
-  public cacheOptions?: ClientCacheOptions;
+  public guilds: GuildManager | null = null; // NOTE: ovo je null u slucaju da nema gatewaya
+
+  /**
+   * The unavailable guilds.
+   */
+  public unavailableGuilds: string[] = [];
+
+  /**
+   * The events emitted by the client.
+   */
+  private events: Collection<
+    `${GatewayDispatchEvents} | ${GatewayRawEvents}`,
+    (...args: any[]) => void
+  > = new Collection();
 
   /**
    * Creates a new instance of the client.
@@ -116,10 +119,16 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
     this.cacheOptions = options.cacheOptions;
 
     if (this.gateway) {
+      this.guilds = new GuildManager(
+        this,
+        this.cacheOptions?.location ?? 'memory'
+      );
       this.loadEvents()
         .then(() => {
           this.gateway?.on('rawEvent', (data: RawShardEventData) => {
-            const eventFn = this.events.get(data.t as keyof ClientEvents);
+            const eventFn = this.events.get(
+              data.t as `${GatewayDispatchEvents} | ${GatewayRawEvents}`
+            );
             if (eventFn) eventFn(data.d, data.shardID);
           });
         })
@@ -139,9 +148,12 @@ class Client extends IvyEventEmitter<keyof ClientEvents, ClientEvents> {
     for (const file of eventFiles) {
       const Event: any = Object.values(await import(file))[0];
       const instance: BaseEvent = new Event(this);
-      this.events.set(instance.name, instance.run);
+      this.events.set(
+        instance.name as `${GatewayDispatchEvents} | ${GatewayRawEvents}`,
+        instance.run
+      );
     }
   }
 }
 
-export { Client, ClientEvents };
+export { Client };

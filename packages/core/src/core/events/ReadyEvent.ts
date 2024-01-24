@@ -11,7 +11,7 @@ class ReadyEvent extends BaseEvent {
    * @param client The client that emits the event.
    */
   constructor(client: Client) {
-    super('ready', client);
+    super('READY', client);
   }
 
   /**
